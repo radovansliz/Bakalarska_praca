@@ -24,5 +24,14 @@ export const routes: RouteRecordRaw[] = [
       layout: '',
     },
   },
+  {
+    name: 'blog',
+    path: '/blog',
+    component: () => import('@/views/Blog.vue'),
+    meta: {
+      title: 'Blog',
+      layout: '',
+    },
+  },
   { path: '/:path(.*)', component: NotFound },
 ]

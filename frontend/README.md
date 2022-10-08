@@ -1,4 +1,4 @@
-# Bakalarska praca
+# Bakalarska praca Radovan Sliz Frontend
 
 Package manager
 ```bash

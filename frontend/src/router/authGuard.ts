@@ -4,11 +4,12 @@ const noAuthWhitelist: RouteRecordName[] = [
   'signup',
   'login',
   'index',
-  'auth'
+  'auth',
+  'blog'
 ]
 
 export default function useAuthGuard(router: Router) {
-  router.beforeEach(async (to:any, from:any, next) => {
+  router.beforeEach(async (to: any, from: any, next) => {
     // const { isSigned, authSyncedAtLeastOnce } = storeToRefs(useUserStore())
     try {
       // wait for signIn status which is assigned asynchronously

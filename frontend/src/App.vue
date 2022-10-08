@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="w-full h-full">
     <suspense>
       <component :is="route.meta.layout" v-if="route.meta.layout">
         <router-view :key="key" />

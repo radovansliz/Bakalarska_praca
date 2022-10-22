@@ -1,6 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@headlessui/vue': ^1.7.3
+  '@heroicons/vue': ^2.0.12
   '@tailwindcss/aspect-ratio': ^0.4.2
   '@tailwindcss/forms': ^0.5.3
   '@tailwindcss/line-clamp': ^0.4.2
@@ -9,6 +11,8 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.36.2
   '@typescript-eslint/parser': ^5.36.2
   '@vitejs/plugin-vue': ^3.1.0
+  '@vue-hero-icons/outline': ^1.7.2
+  '@vue-hero-icons/solid': ^1.7.2
   '@vueuse/core': ^8.2.6
   autoprefixer: ^10.4.8
   axios: ^0.25.0
@@ -31,6 +35,10 @@ specifiers:
   vue-tsc: ^0.40.4
 
 dependencies:
+  '@headlessui/vue': 1.7.3_vue@3.2.38
+  '@heroicons/vue': 2.0.12_vue@3.2.38
+  '@vue-hero-icons/outline': 1.7.2
+  '@vue-hero-icons/solid': 1.7.2
   '@vueuse/core': 8.9.4_vue@3.2.38
   axios: 0.25.0
   axios-auth-refresh: 3.3.3_axios@0.25.0
@@ -144,6 +152,23 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@headlessui/vue/1.7.3_vue@3.2.38:
+    resolution: {integrity: sha512-Is4iakKts9u9E0+jEZNzoJpBjwq2SamwEIoEl2RlyYSu6Zco536GsPXaQEfg/o7Eyc1GUUlcL+dJd4Rt7qyf7A==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      vue: ^3.2.0
+    dependencies:
+      vue: 3.2.38
+    dev: false
+
+  /@heroicons/vue/2.0.12_vue@3.2.38:
+    resolution: {integrity: sha512-ypuQl/Wei7BoShO65AdRVikXDaSt6hJBRuKs2pVd/6HvxfEz18oXraH+J5G/QPIwObMEVhMb6nkOs9l3WZv/gA==}
+    peerDependencies:
+      vue: '>= 3'
+    dependencies:
+      vue: 3.2.38
+    dev: false
 
   /@humanwhocodes/config-array/0.10.4:
     resolution: {integrity: sha512-mXAIHxZT3Vcpg83opl1wGlVZ9xydbfZO3r5YfRSH6Gpp2J/PfdBP0wbDa2sO6/qRbcalpoevVyW6A/fI6LfeMw==}
@@ -465,6 +490,18 @@ packages:
       '@volar/vue-language-core': 0.40.9
     dev: true
 
+  /@vue-hero-icons/outline/1.7.2:
+    resolution: {integrity: sha512-mgMpncarjZHXY1K2tyjbYHf53yQG9amroDR9t2iH/umpsN8+f8RNcTy1m131EZ8WBCm8MpF97XpXPV129rvtVg==}
+    dependencies:
+      babel-helper-vue-jsx-merge-props: 2.0.3
+    dev: false
+
+  /@vue-hero-icons/solid/1.7.2:
+    resolution: {integrity: sha512-ngjgdYgdjXp8BuHmx998Kl2tAmbatJXdYO8Cut+DXo9OVGZMuVmIzIjnar4H5Wf9wFVdCuag+HazLEu9F7T3cw==}
+    dependencies:
+      babel-helper-vue-jsx-merge-props: 2.0.3
+    dev: false
+
   /@vue/compiler-core/3.2.38:
     resolution: {integrity: sha512-/FsvnSu7Z+lkd/8KXMa4yYNUiqQrI22135gfsQYVGuh5tqEgOB0XqrUdb/KnCLa5+TmQLPwvyUnKMyCpu+SX3Q==}
     dependencies:
@@ -710,6 +747,10 @@ packages:
       follow-redirects: 1.15.1
     transitivePeerDependencies:
       - debug
+    dev: false
+
+  /babel-helper-vue-jsx-merge-props/2.0.3:
+    resolution: {integrity: sha512-gsLiKK7Qrb7zYJNgiXKpXblxbV5ffSwR0f5whkPAaBAR4fhi6bwRZxX9wBlIc5M/v8CCkXUbXZL4N/nSE97cqg==}
     dev: false
 
   /balanced-match/1.0.2:

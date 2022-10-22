@@ -2,18 +2,17 @@ import { markRaw } from 'vue'
 import router from '@/router/index'
 import { defineStore, createPinia } from 'pinia'
 
-
 const useRouter = markRaw(router)
 
 export const useUserStore = defineStore('user', {
   state: () => {
     return {
-      auth: false,
+      auth: false
     }
   },
 
   getters: {
-    isSigned: (state) => state.auth,
+    isSigned: (state) => state.auth
   },
 
   actions: {
@@ -23,6 +22,6 @@ export const useUserStore = defineStore('user', {
 
     async signOut(): Promise<void> {
       console.log('SIGN OUT')
-    },
-  },
+    }
+  }
 })

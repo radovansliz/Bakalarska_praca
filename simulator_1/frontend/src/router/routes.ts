@@ -12,15 +12,33 @@ export const routes: RouteRecordRaw[] = [
     name: 'index',
     path: '/',
     redirect: () => {
-      return { path: '/blog' }
+      return { path: '/products' }
     }
   },
   {
-    name: 'blog',
-    path: '/blog',
-    component: () => import('@/views/Blog.vue'),
+    name: 'products',
+    path: '/products',
+    component: () => import('@/views/ProductsView.vue'),
     meta: {
-      title: 'Blog',
+      title: 'ProductList',
+      layout: ''
+    }
+  },
+  {
+    name: 'product_detail',
+    path: '/product/id:',
+    component: () => import('@/views/ProductDetailView.vue'),
+    meta: {
+      title: 'ProductDetail',
+      layout: ''
+    }
+  },
+  {
+    name: 'support',
+    path: '/support',
+    component: () => import('@/views/SupportView.vue'),
+    meta: {
+      title: 'Support',
       layout: ''
     }
   },

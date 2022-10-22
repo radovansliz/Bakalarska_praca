@@ -7,3 +7,4 @@ pandas==1.4.1
 requests==2.27.1
 SQLAlchemy==1.4.21
 pyarrow==7.0.0
+docker==6.0.0

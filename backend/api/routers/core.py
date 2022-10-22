@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field, validator
+import api.database.connect as db_module
 
 router = APIRouter()
 
@@ -24,7 +25,8 @@ def healthcheck():
 @router.post("/start")
 async def start_simulator(aisId: BaseAisIdModel):
     try:
-        BaseAisIdModel(aisId)
+        # TEMP INSERTING ID INTO DB...
+        db_module.cursor.execute("""INSERT INTO students (ais_id) VALUES (%s)""", (aisId.id,))
         return aisId
     except Exception as e:
         return {

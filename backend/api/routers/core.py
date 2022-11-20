@@ -26,7 +26,7 @@ def healthcheck():
 async def start_simulator(aisId: BaseAisIdModel):
     try:
         # TEMP INSERTING ID INTO DB...
-        db_module.cursor.execute("""INSERT INTO students (ais_id) VALUES (%s)""", (aisId.id,))
+        # db_module.cursor.execute("""INSERT INTO students (ais_id) VALUES (%s)""", (aisId.id,))
         return aisId
     except Exception as e:
         return {

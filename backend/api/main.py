@@ -24,5 +24,9 @@ app.add_middleware(
 db_module.connection = db_module.create_db_connection()
 db_module.cursor = db_module.connection.cursor()
 # SQL To create table
-result = db_module.cursor.execute("""CREATE TABLE STUDENTS(AIS_ID INT NOT NULL, SIMULATOR_NUMBER INT)""")
-db_module.connection.commit()
+
+# Check if there is table named Students and if there is not, create one
+db_module.cursor.execute("SELECT * FROM information_schema.tables WHERE table_name=%s", ('students',))
+if not bool(db_module.cursor.rowcount):
+    result = db_module.cursor.execute("""CREATE TABLE STUDENTS(AIS_ID INT NOT NULL, SIMULATOR_NUMBER INT)""")
+    db_module.connection.commit()

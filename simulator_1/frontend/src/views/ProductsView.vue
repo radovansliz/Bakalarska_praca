@@ -1,4 +1,6 @@
-<template></template>
+<template>
+  <div>agsifhasf</div>
+</template>
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 

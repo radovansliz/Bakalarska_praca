@@ -5,7 +5,9 @@ const noAuthWhitelist: RouteRecordName[] = [
   'login',
   'index',
   'auth',
-  'blog'
+  'blog',
+  'products',
+  'landing'
 ]
 
 export default function useAuthGuard(router: Router) {

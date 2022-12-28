@@ -26,6 +26,15 @@ export const routes: RouteRecordRaw[] = [
     }
   },
   {
+    name: 'mortgage',
+    path: '/mortgage',
+    component: () => import('@/views/MortgageView.vue'),
+    meta: {
+      title: 'MortgageView',
+      layout: AppLayout
+    }
+  },
+  {
     name: 'products',
     path: '/products',
     component: () => import('@/views/ProductsView.vue'),

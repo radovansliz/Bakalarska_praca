@@ -20,19 +20,20 @@
           </div>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
-              <a
+              <div
                 v-for="item in navigation"
                 :key="item.name"
-                :href="item.href"
                 :class="[
-                  item.current
+                  item.routeName === route.name
                     ? 'bg-gray-500 text-white'
-                    : 'text-gray-300 hover:bg-gray-400 hover:text-white',
+                    : 'text-gray-300 hover:bg-gray-400 hover:text-white cursor-pointer',
                   'px-3 py-2 rounded-md text-sm font-medium'
                 ]"
                 :aria-current="item.current ? 'page' : undefined"
-                >{{ item.name }}</a
+                @click="routeTo(item.routeName)"
               >
+                {{ item.name }}
+              </div>
             </div>
           </div>
         </div>
@@ -107,7 +108,7 @@
           as="a"
           :href="item.href"
           :class="[
-            route.routeName === item.name
+            route.name === item.name
               ? 'bg-gray-900 text-white'
               : 'text-gray-300 hover:bg-gray-700 hover:text-white',
             'block px-3 py-2 rounded-md text-base font-medium'
@@ -130,14 +131,19 @@ import {
   MenuItems
 } from '@headlessui/vue'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
+const router = useRouter()
+
+function routeTo(route: string) {
+  router.push({ name: route })
+}
 
 const navigation = [
   { name: 'Home', routeName: 'landing', href: '/products', current: true },
   { name: 'Products', routeName: 'products', href: '#', current: false },
   { name: 'Bank account', routeName: 'account', href: '#', current: false },
-  { name: 'Mortgage', routeName: 'mortgage', href: '#', current: false }
+  { name: 'Mortgage', routeName: 'mortgage', href: '/mortgage', current: false }
 ]
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full p-4 bg-dark-400 lg:px-8">
+  <div class="w-full h-full overflow-y-auto p-4 bg-dark-400 lg:px-8">
     <div class="py-6 overflow-hidden px-4 sm:px-6 lg:px-8">
       <div class="relative mx-auto max-w-xl">
         <div class="text-center">

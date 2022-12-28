@@ -3,7 +3,7 @@
     <!-- SIDEBAR -->
     <AppNavbar></AppNavbar>
     <!-- MAIN CONTENT -->
-    <div class="flex h-full min-w-[0] bg-gray-50 relative">
+    <div class="flex h-full min-w-[0] overflow-hidden bg-gray-50 relative">
       <RouterView v-slot="{ Component }">
         <transition
           id="transitionParent"

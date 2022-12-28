@@ -35,6 +35,15 @@ export const routes: RouteRecordRaw[] = [
     }
   },
   {
+    name: 'account',
+    path: '/account',
+    component: () => import('@/views/BankAccountView.vue'),
+    meta: {
+      title: 'BankAccountView',
+      layout: AppLayout
+    }
+  },
+  {
     name: 'products',
     path: '/products',
     component: () => import('@/views/ProductsView.vue'),

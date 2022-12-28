@@ -49,7 +49,7 @@
           </button>
 
           <!-- Profile dropdown -->
-          <Menu as="div" class="relative ml-3">
+          <Menu v-if="false" as="div" class="relative ml-3">
             <div>
               <MenuButton
                 class="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -142,7 +142,7 @@ function routeTo(route: string) {
 const navigation = [
   { name: 'Home', routeName: 'landing', href: '/products', current: true },
   { name: 'Products', routeName: 'products', href: '#', current: false },
-  { name: 'Bank account', routeName: 'account', href: '#', current: false },
+  { name: 'Bank account', routeName: 'account', href: '/account', current: false },
   { name: 'Mortgage', routeName: 'mortgage', href: '/mortgage', current: false }
 ]
 </script>

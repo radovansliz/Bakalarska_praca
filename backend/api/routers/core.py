@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field, validator
-import api.database.connect as db_module
-
+# import api.database.connect as db_module
+from api.helpers.simulator import get_random_simulator_select
+from api.docker.handler import init_simulator_compose
 router = APIRouter()
 
 
-class BaseAisIdModel(BaseModel):
+class BaseUserModel(BaseModel):
     id: int
 
     @validator("id")
@@ -23,12 +24,29 @@ def healthcheck():
 
 
 @router.post("/start")
-async def start_simulator(aisId: BaseAisIdModel):
+async def start_simulator(user: BaseUserModel):
     try:
         # TEMP INSERTING ID INTO DB...
-        db_module.cursor.execute("""INSERT INTO students (ais_id) VALUES (%s)""", (aisId.id,))
-        db_module.connection.commit()
-        return aisId
+        # response = db_module.cursor.execute("""INSERT INTO students (ais_id, simulator_number) VALUES (%s, %s)""", (user.id, 1,))
+        # result = db_module.cursor.fetchone()
+        # db_module.connection.commit()
+        
+        # Prevziatie AIS ID
+        user_id = user
+
+        #Random funkcia vyberie simulator
+        simulator = get_random_simulator_select(user_id)
+
+        #Nahranie AIS ID do ENV simulatora
+        init_simulator_compose(simulator, str(user_id))
+
+        # TODO: Spustenie simulatora
+
+        # TODO: Ulozenie udajov do globalnej DB
+        
+        # print(response)
+        # return response
+        return simulator
     except Exception as e:
         return {
             "success": False,

@@ -14,6 +14,8 @@ RUN apt-get update && \
 RUN mkdir /api
 COPY /api /api
 
+RUN echo "ficime"
+
 # install dependencies
 COPY requirements.txt /
 RUN pip install --no-cache-dir -r requirements.txt

@@ -3,12 +3,12 @@
     <div
       class="flex flex-1 w-full flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-12 xl:px-12"
     >
-      <div class="mx-auto w-full max-w-md">
+      <div v-if="simulatorResponse === null" class="mx-auto w-full max-w-md">
         <div>
           <h2 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">
             Enter AIS ID to start simulator
           </h2>
-          <p class="mt-2 text-sm text-gray-600">
+          <!-- <p class="mt-2 text-sm text-gray-600">
             Or
             {{ ' ' }}
             <a
@@ -16,7 +16,7 @@
               class="font-medium text-indigo-600 hover:text-indigo-500"
               >contact support</a
             >
-          </p>
+          </p> -->
         </div>
 
         <div class="mt-8">
@@ -75,13 +75,41 @@
           </div>
         </div>
       </div>
+
+      <div v-else class="mx-auto w-full max-w-md">
+        <div class="bg-white">
+          <div class="mx-auto max-w-7xl py-16 px-6 sm:py-24 lg:px-8">
+            <div class="text-center">
+              <h2 class="text-base font-semibold text-indigo-600">
+                CTF Simulations
+              </h2>
+              <p
+                class="mt-1 text-4xl font-bold tracking-tight text-gray-900"
+              >
+                Simulator is ready
+              </p>
+              <p class="mx-auto mt-5 max-w-xl text-base text-gray-500">
+                Click the button below to enter the simulator
+              </p>
+              <div class="mt-5">
+                <a
+                  :href="simulatorResponse.url"
+                  target="_blank"
+                  class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >Continue</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useApiFetch } from '@/composables/useApi'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 
 const router = useRouter()
 const goBack = () => {
@@ -90,6 +118,7 @@ const goBack = () => {
 
 const aisId = ref(null)
 const enterIdError = ref(false)
+const simulatorResponse: any = ref(null)
 
 async function startSimulator() {
   enterIdError.value = false
@@ -104,7 +133,9 @@ async function startSimulator() {
     })
     .json()
 
-  console.log('STATUS CODE', data.value)
+  simulatorResponse.value = data.value
+
+  console.log('STATUS CODE', response.value)
 }
 </script>
 <style scoped>

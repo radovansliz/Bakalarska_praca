@@ -4,7 +4,7 @@ from pydantic import BaseModel, validator
 # import api.database.connect as db_module
 from api.helpers.simulator import get_random_simulator_select
 
-# from api.docker.handler import init_simulator_compose
+from api.docker.handler import init_simulator_compose, start_simulator_compose
 
 router = APIRouter()
 
@@ -45,10 +45,12 @@ async def start_simulator(user: BaseUserModel = Body(...)):
         simulator = get_random_simulator_select(user_id)
 
         # Nahranie AIS ID do ENV simulatora
-        # init_simulator_compose(simulator, str(user_id))
+        # ? Pozor toto mozno nevracia spravne instanciu DockerClient lebo tu neni importnuty package
+        docker_client = init_simulator_compose(simulator, str(user_id))
 
         # TODO: Spustenie simulatora
-
+        # ! Toto este nefunguje lebo nam chyba docker compose file pre dany simulator
+        start_simulator_compose(docker_client)
         # TODO: Ulozenie udajov do globalnej DB
 
         # print(response)

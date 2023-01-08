@@ -9,6 +9,6 @@ COPY /frontend /frontend
 
 RUN pnpm install
 
-EXPOSE 8900
+EXPOSE 3001
 
-CMD ["pnpm", "run", "dev", "--host", "0.0.0.0", "--port", "8900"]
+CMD ["pnpm", "run", "dev", "--host", "0.0.0.0", "--port", "3001"]

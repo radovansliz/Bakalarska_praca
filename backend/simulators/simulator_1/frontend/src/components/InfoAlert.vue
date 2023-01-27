@@ -16,7 +16,7 @@
           :key="idx"
           class="text-sm text-blue-400 py-2"
         >
-          <span class="text-sm text-blue-700 font-sans font-bold"> Response: {{ idx }}</span>
+          <span class="text-sm text-blue-700 font-sans font-bold"> Response: {{ result.input }}</span>
           <pre class="text-blue-700">
           {{ result.response }}
 

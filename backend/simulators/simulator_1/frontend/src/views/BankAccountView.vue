@@ -11,7 +11,7 @@
 
       <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-gray-700 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form class="space-y-6" action="#" method="POST">
+          <div class="space-y-6">
             <div>
               <label for="email" class="block text-sm font-medium text-gray-200"
                 >Email address</label
@@ -20,6 +20,7 @@
                 <input
                   id="email"
                   name="email"
+                  v-model="signInForm.email"
                   class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-button-color focus:outline-none focus:ring-button-color sm:text-sm"
                 />
               </div>
@@ -35,6 +36,7 @@
                 <input
                   id="password"
                   name="password"
+                  v-model="signInForm.password"
                   class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-button-color focus:outline-none focus:ring-button-color sm:text-sm"
                 />
               </div>
@@ -66,13 +68,13 @@
 
             <div>
               <button
-                type="submit"
                 class="flex w-full justify-center rounded-md border border-transparent bg-button-color py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-button-color focus:outline-none focus:ring-2 focus:ring-button-color focus:ring-offset-2"
-              >
+                @click="sendRequest"
+                >
                 Sign in
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
@@ -85,9 +87,40 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import InfoAlert from '@/components/InfoAlert.vue'
+import { useApiFetch } from '@/composables/useApi';
 
 const router = useRouter()
-const response = ref(null)
+const response: any = ref(null)
+const loader = ref(false)
+const signInForm = ref({
+  email: '',
+  password: '',
+})
+
+async function sendRequest() {
+  loader.value = true
+
+  // call api
+  try {
+    const {
+      data: apiData,
+      error: renormalizeError
+    } = await useApiFetch('signin')
+      .post({
+        form: [{ id: 2, name: 'SignIn - email', value: signInForm.value.email }, { id: 1, name: 'SignIn - password', value: signInForm.value.password }]
+      })
+      .json()
+    if (renormalizeError.value) {
+      response.value = { error: renormalizeError.value }
+    } else {
+      response.value = { results: apiData.value.results}
+    }
+    loader.value = false
+  } catch (e) {
+    loader.value = false
+    response.value = { error: e }
+  }
+}
 
 const goBack = () => {
   router.go(-1)

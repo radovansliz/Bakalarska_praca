@@ -76,15 +76,18 @@
         </div>
       </div>
     </div>
+    <div v-if="response">
+      <InfoAlert :content="response"></InfoAlert>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-import { Switch } from '@headlessui/vue'
+import InfoAlert from '@/components/InfoAlert.vue'
 
 const router = useRouter()
-const agreed = ref(false)
+const response = ref(null)
 
 const goBack = () => {
   router.go(-1)

@@ -1,8 +1,6 @@
 <template>
   <div class="bg-dark-400">
-    <div
-      class="mx-auto max-w-7xl py-12 lg:flex lg:items-center lg:py-16 "
-    >
+    <div class="mx-auto max-w-7xl py-12 lg:flex lg:items-center lg:py-16">
       <div class="lg:w-0 lg:flex-1">
         <h2
           class="text-xl font-bold tracking-tight text-white"
@@ -11,7 +9,8 @@
           Stay in touch
         </h2>
         <p class="mt-3 max-w-3xl text-base leading-6 text-gray-300">
-          I want to get updates about new products and offers. I want to recieve emails with offers and newsletter
+          I want to get updates about new products and offers. I want to recieve
+          emails with offers and newsletter
         </p>
       </div>
       <div class="mt-8 lg:mt-0 lg:ml-8">
@@ -41,8 +40,14 @@
         </p>
       </div>
     </div>
+    <div v-if="response" class="mt-3">
+      <InfoAlert :content="response"></InfoAlert>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
+import InfoAlert from '@/components/InfoAlert.vue'
 import { ref } from 'vue'
+
+const response = ref(null)
 </script>

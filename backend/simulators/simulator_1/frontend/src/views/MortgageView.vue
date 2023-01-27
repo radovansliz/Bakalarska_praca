@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full overflow-y-auto p-4 bg-dark-400 lg:px-8">
-    <div class="py-6 overflow-hidden px-4 sm:px-6 lg:px-8">
+    <div class="py-6 overflow-hidden px-4 sm:px-6 lg:px-8 flex">
       <div class="relative mx-auto max-w-xl">
         <div class="text-center">
           <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -170,6 +170,9 @@
           </form>
         </div>
       </div>
+      <div v-if="response" class="">
+        <InfoAlert :content="response"></InfoAlert>
+      </div>
     </div>
   </div>
 </template>
@@ -177,9 +180,159 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { Switch } from '@headlessui/vue'
+import InfoAlert from '@/components/InfoAlert.vue'
 
 const router = useRouter()
 const agreed = ref(false)
+const response = ref(null)
+
+const results = {
+  results: [
+    {
+      response: [
+        [
+          'John Smith',
+          '123-456-7890',
+          '123 Main St',
+          'johnsmith@email.com',
+          'savings',
+          '2020-01-01T00:00:00',
+          true,
+          false
+        ],
+        [
+          'Jane Doe',
+          '123-456-7891',
+          '456 Main St',
+          'janedoe@email.com',
+          'checking',
+          '2020-02-01T00:00:00',
+          true,
+          true
+        ],
+        [
+          'Bob Johnson',
+          '123-456-7892',
+          '789 Main St',
+          'bobjohnson@email.com',
+          'savings',
+          '2020-03-01T00:00:00',
+          false,
+          true
+        ],
+        [
+          'Sally Smith',
+          '123-456-7893',
+          '321 Main St',
+          'sallysmith@email.com',
+          'checking',
+          '2020-04-01T00:00:00',
+          false,
+          false
+        ],
+        [
+          'Mike Jones',
+          '123-456-7894',
+          '654 Main St',
+          'mikejones@email.com',
+          'savings',
+          '2020-05-01T00:00:00',
+          true,
+          true
+        ],
+        [
+          'Lisa Williams',
+          '123-456-7895',
+          '987 Main St',
+          'lisawilliams@email.com',
+          'checking',
+          '2020-06-01T00:00:00',
+          false,
+          true
+        ],
+        [
+          'Chris Brown',
+          '123-456-7896',
+          '246 Main St',
+          'chrisbrown@email.com',
+          'savings',
+          '2020-07-01T00:00:00',
+          true,
+          true
+        ],
+        [
+          'Sarah Johnson',
+          '123-456-7897',
+          '369 Main St',
+          'sarahjohnson@email.com',
+          'checking',
+          '2020-08-01T00:00:00',
+          false,
+          false
+        ],
+        [
+          'Tom Smith',
+          '123-456-7898',
+          '159 Main St',
+          'tomsmith@email.com',
+          'savings',
+          '2020-09-01T00:00:00',
+          true,
+          true
+        ],
+        [
+          'Kate Williams',
+          '123-456-7899',
+          '753 Main St',
+          'katewilliams@email.com',
+          'checking',
+          '2020-10-01T00:00:00',
+          true,
+          true
+        ],
+        [
+          'Mark Jones',
+          '123-456-7900',
+          '147 Main St',
+          'markjones@email.com',
+          'savings',
+          '2020-11-01T00:00:00',
+          false,
+          true
+        ]
+      ],
+      query: "SELECT * FROM clients WHERE name = ''; Select * from clients;"
+    },
+    {
+      response: {},
+      query: "SELECT * FROM clients WHERE name = '4564654"
+    },
+    {
+      response: {},
+      query: "SELECT * FROM clients WHERE name = 'Hlavna"
+    },
+    {
+      response: {},
+      query: "SELECT * FROM clients WHERE name = 'jozef@gmail.com"
+    },
+    {
+      response: {},
+      query: "SELECT * FROM clients WHERE name = 'Basic"
+    },
+    {
+      response: {},
+      query: "SELECT * FROM clients WHERE name = '2020-02-01 00:00:00"
+    },
+    {
+      response: {},
+      query: "SELECT * FROM clients WHERE name = 'False"
+    },
+    {
+      response: {},
+      query: "SELECT * FROM clients WHERE name = 'True"
+    }
+  ]
+}
 
 const goBack = () => {
   router.go(-1)

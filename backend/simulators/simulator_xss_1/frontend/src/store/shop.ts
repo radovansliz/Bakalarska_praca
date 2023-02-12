@@ -1,6 +1,7 @@
 import { markRaw } from 'vue'
 import router from '@/router/index'
 import { defineStore, createPinia } from 'pinia'
+import sanitizeHTML from 'sanitize-html'
 
 const useRouter = markRaw(router)
 
@@ -83,28 +84,29 @@ export const useShopStore = defineStore('shop', {
     getProductById(state) {
       return (id: string | number): any =>
         state.products.find((product: any) => product.id === id)
+    },
+    isInputVulnerable(state) {
+      return (id: string): any => id === '1'
     }
   },
 
   actions: {
-    async signIn(user: any, token: any): Promise<void> {
-      return Promise.resolve()
-    },
-
-    async signOut(): Promise<void> {
-      console.log('SIGN OUT')
-    },
-
-    async addToCart(item: any): Promise<void> {
-      this.cart.push(item)
-    },
-
-    async removeFromCart(itemId: string): Promise<void> {
-      if (this.cart.length > 0) {
-        const index = this.cart.indexOf((item: any) => item.id === itemId)
-        if (index > 0) {
-          this.cart.splice(index, 1)
-        }
+    processValue(inputObject: { id: string; value: any }) {
+      console.log('INPUT OBJECT', inputObject)
+      if (inputObject.id === '1') {
+        console.log(
+          'INPUT OBJECT RAW',
+          inputObject.value.replace(/<script[^>]*>([\s\S]*?)<\/script>/g, '$1')
+        )
+        return inputObject.value.replace(
+          /<script[^>]*>([\s\S]*?)<\/script>/g,
+          '$1'
+        )
+      } else {
+        console.log('INPUT OBJECT SANITIZED', sanitizeHTML(inputObject))
+        return sanitizeHTML(inputObject.value) !== ''
+          ? sanitizeHTML(inputObject.value)
+          : 'Nothing to show'
       }
     }
   }

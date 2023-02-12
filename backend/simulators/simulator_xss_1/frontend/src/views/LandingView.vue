@@ -251,26 +251,26 @@
                   The latest news, articles, and resources, sent to your inbox
                   weekly.
                 </p>
-                <form class="mt-4 sm:mt-6 sm:flex">
+                <div class="mt-4 sm:mt-6 sm:flex">
                   <label for="email-address" class="sr-only"
                     >Email address</label
                   >
                   <input
                     id="email-address"
                     type="text"
+                    v-model="newsLetterInput.value"
                     autocomplete="email"
-                    required=""
                     class="w-full min-w-0 appearance-none rounded-md border border-gray-300 bg-white py-2 px-4 text-base text-gray-900 placeholder-gray-500 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   />
                   <div class="mt-3 sm:mt-0 sm:ml-4 sm:flex-shrink-0">
                     <button
-                      type="submit"
                       class="flex w-full items-center justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white"
+                      @click="submitInput"
                     >
                       Sign up
                     </button>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
 
@@ -292,14 +292,22 @@
                 <p class="mt-2 text-gray-200">
                   Did you sign up to the newsletter? If so, use the keyword we
                   sent you to get access.
-                  <a
-                    href="#"
-                    class="whitespace-nowrap font-bold text-white hover:text-gray-200"
-                    >Go now<span aria-hidden="true"> &rarr;</span></a
-                  >
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div class="w-full py-5">
+          <div class="full text-lg font-bold text-gray-600 mb-4">
+            Result of input
+          </div>
+          <h3>Here is your result:</h3>
+          <component v-if="isInputVulnerable && showComponent" is="script">
+            {{ result }}</component
+          >
+          <div v-if="!isInputVulnerable && showComponent">{{ result }}</div>
+          <div v-html="test">
           </div>
         </div>
 
@@ -342,14 +350,58 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import { useShopStore } from '@/store/shop'
+import { ref, reactive, onMounted } from 'vue'
+import { useScriptTag } from '@vueuse/core'
 
 const router = useRouter()
 const route = useRoute()
 const shopStore = useShopStore()
+const showComponent = ref(false)
 
-const goBack = () => {
-  router.go(-1)
+const newsLetterInput = ref({
+  id: '2',
+  value: ''
+})
+
+const isInputVulnerable = ref(
+  shopStore.isInputVulnerable(newsLetterInput.value.id)
+)
+console.log('isInputVulnerable', isInputVulnerable.value)
+const result = ref('')
+
+// TOTO JE MOZNO CESTA
+// const test = ref(`<img src="x" onerror="alert(1)" />`)
+
+const state = reactive({
+  result: ''
+})
+
+//@ts-ignore
+const resultContainer = ref<HTMLDivElement>(null)
+
+function submitInput() {
+  result.value = ''
+  showComponent.value = false
+
+  setTimeout(() => {
+    result.value = shopStore.processValue(newsLetterInput.value)
+    showComponent.value = true
+    console.log('result', state.result)
+  }, 1000)
+  // useScriptTag(
+  //   'https://player.twitch.tv/js/embed/v1.js',
+  //   // on script tag loaded.
+  //   (el: HTMLScriptElement) => {
+  //     alert('AHOJ')
+  //   }
+  // )
 }
+
+onMounted(() => {
+  setTimeout(() => {
+    resultContainer.value.innerHTML = state.result
+  }, 0)
+})
 
 const offers = [
   {

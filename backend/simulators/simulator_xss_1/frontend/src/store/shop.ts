@@ -2,9 +2,7 @@ import { markRaw } from 'vue'
 import router from '@/router/index'
 import { defineStore, createPinia } from 'pinia'
 import sanitizeHTML from 'sanitize-html'
-import { useApiFetch } from '@/composables/useApi'
 
-const useRouter = markRaw(router)
 
 export const useShopStore = defineStore('shop', {
   state: () => {
@@ -110,26 +108,5 @@ export const useShopStore = defineStore('shop', {
           : 'Nothing to show'
       }
     },
-
-    // API Method to get Flag
-    async sendRequest() {
-      flagFound.value = false
-      // call api
-      try {
-        const { data: apiData, error: renormalizeError } = await useApiFetch(
-          'flag'
-        )
-          .get()
-          .json()
-        if (renormalizeError.value) {
-          flag.value = renormalizeError.value
-        } else {
-          flagFound.value = true
-          flag.value = apiData.value.detail[0][0]
-        }
-      } catch (e) {
-        flag.value = 'Error'
-      }
-    }
   }
 })

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full flex items-center overflow-y-auto px-4 bg-white lg:px-8">
+  <div class="w-full h-full items-center overflow-y-auto px-4 bg-white lg:px-8 py-6">
     <!-- Contact section -->
     <section class="relative bg-white" aria-labelledby="contact-heading">
       <div class="absolute h-1/2 w-full bg-warm-gray-50" aria-hidden="true" />
@@ -116,7 +116,13 @@
                 Contact information
               </h3>
               <p class="mt-6 max-w-3xl text-base text-primary-50">
-                We value our customers and are committed to providing exceptional customer service. If you have any questions, concerns, or feedback, we would love to hear from you. Our dedicated team is available to assist you with any inquiries you may have. Please fill out the form on this page with your contact information and a brief message, and we will respond to you as soon as possible.
+                We value our customers and are committed to providing
+                exceptional customer service. If you have any questions,
+                concerns, or feedback, we would love to hear from you. Our
+                dedicated team is available to assist you with any inquiries you
+                may have. Please fill out the form on this page with your
+                contact information and a brief message, and we will respond to
+                you as soon as possible.
               </p>
               <dl class="mt-8 space-y-6">
                 <dd class="flex text-base text-primary-50">
@@ -196,10 +202,8 @@
                   >
                   <div class="mt-1">
                     <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autocomplete="email"
+                      v-model="supportForm.email.value"
+                      type="text"
                       class="block w-full rounded-md border-warm-gray-300 py-3 px-4 text-warm-gray-900 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                     />
                   </div>
@@ -212,9 +216,8 @@
                   >
                   <div class="mt-1">
                     <input
+                      v-model="supportForm.subject.value"
                       type="text"
-                      name="subject"
-                      id="subject"
                       class="block w-full rounded-md border-warm-gray-300 py-3 px-4 text-warm-gray-900 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                     />
                   </div>
@@ -232,9 +235,8 @@
                   </div>
                   <div class="mt-1">
                     <textarea
-                      id="message"
-                      name="message"
                       rows="4"
+                      v-model="supportForm.message.value"
                       class="block w-full rounded-md border-warm-gray-300 py-3 px-4 text-warm-gray-900 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                       aria-describedby="message-max"
                     />
@@ -242,8 +244,8 @@
                 </div>
                 <div class="sm:col-span-2 sm:flex sm:justify-end">
                   <button
-                    type="submit"
                     class="mt-2 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-primary-500 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+                    @click="submitInput"
                   >
                     Submit
                   </button>
@@ -254,13 +256,69 @@
         </div>
       </div>
     </section>
+
+    <div v-if="showComponent" class="w-full">
+      <!-- RESULT Frame -->
+      <ResultFrame
+        v-for="input in Object.values(supportForm)"
+        :key="input.id"
+        :result="input.result"
+        :isInputVulnerable="shopStore.isInputVulnerable(input.id)"
+        :showComponent="showComponent"
+        :flagFound="flagFound"
+        :flag="flag"
+        :title="input.title"
+      ></ResultFrame>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import useFlagMethods from '@/composables/useFlagMethods'
+import { useShopStore } from '@/store/shop'
+import ResultFrame from '@/components/ResultFrame.vue'
 
-const router = useRouter()
-const goBack = () => {
-  router.go(-1)
+const shopStore = useShopStore()
+const showComponent = ref(false)
+
+const supportForm = ref({
+  email: {
+    id: '4',
+    value: '',
+    title: 'email',
+    result: null
+  },
+  subject: {
+    id: '5',
+    value: '',
+    title: 'subject',
+    result: null
+  },
+  message: {
+    id: '6',
+    value: '',
+    title: 'message',
+    result: null
+  }
+})
+
+// Composable to import vulnerable logic to call flag. getFlag method is called dynamically it is not used nowhere in code
+const { flagFound, flag, getFlag } = useFlagMethods()
+
+// Method to process input in store
+function submitInput() {
+  showComponent.value = false
+  flag.value = ''
+  flagFound.value = false
+
+  Object.values(supportForm.value).map((element) => {
+    setTimeout(() => {
+      element.result = shopStore.processValue({
+        id: element.id,
+        value: element.value
+      })
+    })
+  })
+  showComponent.value = true
 }
 </script>

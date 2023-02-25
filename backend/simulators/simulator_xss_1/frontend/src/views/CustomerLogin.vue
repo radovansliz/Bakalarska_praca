@@ -90,15 +90,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import useFlagMethods from '@/composables/useFlagMethods'
 import { useShopStore } from '@/store/shop'
 import ResultFrame from '@/components/ResultFrame.vue'
 
-const router = useRouter()
-const response: any = ref(null)
-const loader = ref(false)
 const shopStore = useShopStore()
 const showComponent = ref(false)
 

@@ -141,7 +141,6 @@ function routeTo(route: string) {
 
 const navigation = [
   { name: 'Home', routeName: 'landing', href: '/products', current: true },
-  { name: 'Products', routeName: 'products', href: '#', current: false },
   { name: 'Bank account', routeName: 'account', href: '/account', current: false },
   { name: 'Mortgage', routeName: 'mortgage', href: '/mortgage', current: false }
 ]

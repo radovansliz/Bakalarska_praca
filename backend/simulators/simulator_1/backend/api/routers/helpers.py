@@ -1,11 +1,11 @@
 
-# Function to get random number of input vulnerable to SQL Injection
-def get_random_vulnerable_input_number(aisId: int) -> str:
-    import random
+import random
 
+# Function to get random number used for selection of type of SQL injection as vulnerability or input number vulnerable to SQL Injection
+def get_random__number(aisId: int, rangeStart:int, rangeEnd:int) -> str:
     random.seed(aisId)
-    pick = random.randint(1, 9)
-    return pick
+    pick = random.randint(rangeStart, rangeEnd)
+    return str(pick)
 
 def find_object_in_payload(payload, key_to_found:str):
     for object in payload.form:

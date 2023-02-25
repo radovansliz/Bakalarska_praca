@@ -101,17 +101,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router'
 import MoneyStatWidget from '@/components/MoneyStatWidget.vue'
 import NewsLetterPanel from '@/components/NewsLetterPanel.vue'
 import { InformationCircleIcon } from '@heroicons/vue/20/solid'
 
-const router = useRouter()
-const route = useRoute()
-
-const goBack = () => {
-  router.go(-1)
-}
 
 const stats = [
   { title: 'USD', value: '1.0844', image: 'usa' },

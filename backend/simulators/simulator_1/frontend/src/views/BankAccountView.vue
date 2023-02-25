@@ -18,9 +18,8 @@
               >
               <div class="mt-1">
                 <input
-                  id="email"
-                  name="email"
-                  v-model="signInForm.email"
+                  type="text"
+                  v-model="signInForm.email.value"
                   class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-button-color focus:outline-none focus:ring-button-color sm:text-sm"
                 />
               </div>
@@ -34,9 +33,8 @@
               >
               <div class="mt-1">
                 <input
-                  id="password"
-                  name="password"
-                  v-model="signInForm.password"
+                  type="text"
+                  v-model="signInForm.password.value"
                   class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-button-color focus:outline-none focus:ring-button-color sm:text-sm"
                 />
               </div>
@@ -69,8 +67,13 @@
             <div>
               <button
                 class="flex w-full justify-center rounded-md border border-transparent bg-button-color py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-button-color focus:outline-none focus:ring-2 focus:ring-button-color focus:ring-offset-2"
-                @click="sendRequest"
-                >
+                @click="sendRequest(signInForm)"
+              >
+                <LoadingIcon
+                  v-if="loading"
+                  class="-ml-1 mr-3 h-5 w-5 text-white"
+                />
+                <slot />
                 Sign in
               </button>
             </div>
@@ -84,45 +87,23 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import InfoAlert from '@/components/InfoAlert.vue'
-import { useApiFetch } from '@/composables/useApi';
+import useSendRequest from '@/composables/useSendRequest'
+import LoadingIcon from '@/components/LoadingIcon.vue'
 
-const router = useRouter()
-const response: any = ref(null)
-const loader = ref(false)
 const signInForm = ref({
-  email: '',
-  password: '',
+  email: {
+    id: 2,
+    name: 'Email',
+    value: ''
+  },
+  password: {
+    id: 3,
+    name: 'Password',
+    value: ''
+  }
 })
 
-async function sendRequest() {
-  loader.value = true
-
-  // call api
-  try {
-    const {
-      data: apiData,
-      error: renormalizeError
-    } = await useApiFetch('signin')
-      .post({
-        form: [{ id: 2, name: 'SignIn - email', value: signInForm.value.email }, { id: 1, name: 'SignIn - password', value: signInForm.value.password }]
-      })
-      .json()
-    if (renormalizeError.value) {
-      response.value = { error: renormalizeError.value }
-    } else {
-      response.value = { results: apiData.value.results}
-    }
-    loader.value = false
-  } catch (e) {
-    loader.value = false
-    response.value = { error: e }
-  }
-}
-
-const goBack = () => {
-  router.go(-1)
-}
+const { response, loading, sendRequest } = useSendRequest()
 </script>

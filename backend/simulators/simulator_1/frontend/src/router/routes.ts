@@ -43,32 +43,5 @@ export const routes: RouteRecordRaw[] = [
       layout: AppLayout
     }
   },
-  {
-    name: 'products',
-    path: '/products',
-    component: () => import('@/views/ProductsView.vue'),
-    meta: {
-      title: 'ProductList',
-      layout: AppLayout
-    }
-  },
-  {
-    name: 'product_detail',
-    path: '/product/id:',
-    component: () => import('@/views/ProductDetailView.vue'),
-    meta: {
-      title: 'ProductDetail',
-      layout: ''
-    }
-  },
-  {
-    name: 'support',
-    path: '/support',
-    component: () => import('@/views/SupportView.vue'),
-    meta: {
-      title: 'Support',
-      layout: ''
-    }
-  },
   { path: '/:path(.*)', component: NotFound }
 ]

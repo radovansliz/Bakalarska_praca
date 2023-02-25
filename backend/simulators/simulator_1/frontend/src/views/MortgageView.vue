@@ -11,11 +11,7 @@
           </p>
         </div>
         <div class="mt-5">
-          <form
-            action="#"
-            method="POST"
-            class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8"
-          >
+          <div class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
             <div>
               <label
                 for="first-name"
@@ -24,10 +20,8 @@
               >
               <div class="mt-1">
                 <input
+                  v-model="mortgageForm.firstName.value"
                   type="text"
-                  name="first-name"
-                  id="first-name"
-                  autocomplete="given-name"
                   class="block w-full rounded-md border-gray-300 py-3 px-4 shadow-sm focus:border-button-color focus:ring-button-color"
                 />
               </div>
@@ -40,10 +34,8 @@
               >
               <div class="mt-1">
                 <input
+                  v-model="mortgageForm.lastName.value"
                   type="text"
-                  name="last-name"
-                  id="last-name"
-                  autocomplete="family-name"
                   class="block w-full rounded-md border-gray-300 py-3 px-4 shadow-sm focus:border-button-color focus:ring-button-color"
                 />
               </div>
@@ -56,10 +48,8 @@
               >
               <div class="mt-1">
                 <input
+                  v-model="mortgageForm.address.value"
                   type="text"
-                  name="address"
-                  id="address"
-                  autocomplete="address"
                   class="block w-full rounded-md border-gray-300 py-3 px-4 shadow-sm focus:border-button-color focus:ring-button-color"
                 />
               </div>
@@ -70,10 +60,8 @@
               >
               <div class="mt-1">
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
+                  v-model="mortgageForm.email.value"
+                  type="text"
                   class="block w-full rounded-md border-gray-300 py-3 px-4 shadow-sm focus:border-button-color focus:ring-button-color"
                 />
               </div>
@@ -98,10 +86,8 @@
                   </select>
                 </div>
                 <input
+                  v-model="mortgageForm.phone.value"
                   type="text"
-                  name="phone-number"
-                  id="phone-number"
-                  autocomplete="tel"
                   class="block w-full rounded-md border-gray-300 py-3 px-4 pl-20 focus:border-button-color focus:ring-button-color"
                   placeholder="+1 (555) 987-6543"
                 />
@@ -115,8 +101,7 @@
               >
               <div class="mt-1">
                 <textarea
-                  id="message"
-                  name="message"
+                  v-model="mortgageForm.message.value"
                   rows="4"
                   class="block w-full rounded-md border-gray-300 py-3 px-4 shadow-sm focus:border-button-color focus:ring-button-color"
                 />
@@ -161,13 +146,18 @@
             </div>
             <div class="sm:col-span-2">
               <button
-                type="submit"
                 class="inline-flex w-full items-center justify-center rounded-md border border-transparent bg-button-color px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-button-color focus:outline-none focus:ring-2 focus:ring-button-color focus:ring-offset-2"
+                @click="sendRequest(mortgageForm)"
               >
+                <LoadingIcon
+                  v-if="loading"
+                  class="-ml-1 mr-3 h-5 w-5 text-white"
+                />
+                <slot />
                 Send request
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
       <div v-if="response" class="">
@@ -177,164 +167,46 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { Switch } from '@headlessui/vue'
 import InfoAlert from '@/components/InfoAlert.vue'
+import useSendRequest from '@/composables/useSendRequest'
+import LoadingIcon from '@/components/LoadingIcon.vue'
 
-const router = useRouter()
 const agreed = ref(false)
-const response = ref(null)
 
-const results = {
-  results: [
-    {
-      response: [
-        [
-          'John Smith',
-          '123-456-7890',
-          '123 Main St',
-          'johnsmith@email.com',
-          'savings',
-          '2020-01-01T00:00:00',
-          true,
-          false
-        ],
-        [
-          'Jane Doe',
-          '123-456-7891',
-          '456 Main St',
-          'janedoe@email.com',
-          'checking',
-          '2020-02-01T00:00:00',
-          true,
-          true
-        ],
-        [
-          'Bob Johnson',
-          '123-456-7892',
-          '789 Main St',
-          'bobjohnson@email.com',
-          'savings',
-          '2020-03-01T00:00:00',
-          false,
-          true
-        ],
-        [
-          'Sally Smith',
-          '123-456-7893',
-          '321 Main St',
-          'sallysmith@email.com',
-          'checking',
-          '2020-04-01T00:00:00',
-          false,
-          false
-        ],
-        [
-          'Mike Jones',
-          '123-456-7894',
-          '654 Main St',
-          'mikejones@email.com',
-          'savings',
-          '2020-05-01T00:00:00',
-          true,
-          true
-        ],
-        [
-          'Lisa Williams',
-          '123-456-7895',
-          '987 Main St',
-          'lisawilliams@email.com',
-          'checking',
-          '2020-06-01T00:00:00',
-          false,
-          true
-        ],
-        [
-          'Chris Brown',
-          '123-456-7896',
-          '246 Main St',
-          'chrisbrown@email.com',
-          'savings',
-          '2020-07-01T00:00:00',
-          true,
-          true
-        ],
-        [
-          'Sarah Johnson',
-          '123-456-7897',
-          '369 Main St',
-          'sarahjohnson@email.com',
-          'checking',
-          '2020-08-01T00:00:00',
-          false,
-          false
-        ],
-        [
-          'Tom Smith',
-          '123-456-7898',
-          '159 Main St',
-          'tomsmith@email.com',
-          'savings',
-          '2020-09-01T00:00:00',
-          true,
-          true
-        ],
-        [
-          'Kate Williams',
-          '123-456-7899',
-          '753 Main St',
-          'katewilliams@email.com',
-          'checking',
-          '2020-10-01T00:00:00',
-          true,
-          true
-        ],
-        [
-          'Mark Jones',
-          '123-456-7900',
-          '147 Main St',
-          'markjones@email.com',
-          'savings',
-          '2020-11-01T00:00:00',
-          false,
-          true
-        ]
-      ],
-      query: "SELECT * FROM clients WHERE name = ''; Select * from clients;"
-    },
-    {
-      response: {},
-      query: "SELECT * FROM clients WHERE name = '4564654"
-    },
-    {
-      response: {},
-      query: "SELECT * FROM clients WHERE name = 'Hlavna"
-    },
-    {
-      response: {},
-      query: "SELECT * FROM clients WHERE name = 'jozef@gmail.com"
-    },
-    {
-      response: {},
-      query: "SELECT * FROM clients WHERE name = 'Basic"
-    },
-    {
-      response: {},
-      query: "SELECT * FROM clients WHERE name = '2020-02-01 00:00:00"
-    },
-    {
-      response: {},
-      query: "SELECT * FROM clients WHERE name = 'False"
-    },
-    {
-      response: {},
-      query: "SELECT * FROM clients WHERE name = 'True"
-    }
-  ]
-}
+const mortgageForm = ref({
+  firstName: {
+    id: 4,
+    name: 'First name',
+    value: ''
+  },
+  lastName: {
+    id: 5,
+    name: 'Last name',
+    value: ''
+  },
+  address: {
+    id: 6,
+    name: 'Address',
+    value: ''
+  },
+  email: {
+    id: 7,
+    name: 'Email',
+    value: ''
+  },
+  phone: {
+    id: 8,
+    name: 'Phone number',
+    value: ''
+  },
+  message: {
+    id: 9,
+    name: 'Message',
+    value: ''
+  }
+})
 
-const goBack = () => {
-  router.go(-1)
-}
+const { response, loading, sendRequest } = useSendRequest()
 </script>

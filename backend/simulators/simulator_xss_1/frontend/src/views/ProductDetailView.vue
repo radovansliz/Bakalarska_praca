@@ -8,7 +8,6 @@
         >
           <!-- Product details -->
           <div class="lg:max-w-lg lg:self-end">
-
             <div class="mt-4">
               <h1
                 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
@@ -56,7 +55,9 @@
               </div>
 
               <div class="mt-4 space-y-6">
-                <p class="text-base text-gray-500">{{ productDetail.imageAlt }}</p>
+                <p class="text-base text-gray-500">
+                  {{ productDetail.imageAlt }}
+                </p>
               </div>
             </section>
           </div>
@@ -131,103 +132,147 @@
       </div>
 
       <div aria-labelledby="reviews-heading" class="bg-white">
-        <div
-          class="mx-auto max-w-2xl py-5 px-4 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-x-8 lg:py-5 lg:px-8"
-        >
-          <div class="lg:col-span-4">
-            <h2
-              id="reviews-heading"
-              class="text-2xl font-bold tracking-tight text-gray-900"
-            >
-              Customer Reviews
-            </h2>
-
-            <div class="mt-3 flex items-center">
-              <div>
-                <div class="flex items-center">
-                  <StarIcon
-                    v-for="rating in [0, 1, 2, 3, 4]"
-                    :key="rating"
-                    :class="[
-                      reviews.average > rating
-                        ? 'text-yellow-400'
-                        : 'text-gray-300',
-                      'flex-shrink-0 h-5 w-5'
-                    ]"
-                    aria-hidden="true"
-                  />
-                </div>
-                <p class="sr-only">{{ reviews.average }} out of 5 stars</p>
-              </div>
-              <p class="ml-2 text-sm text-gray-900">
-                Based on {{ reviews.totalCount }} reviews
-              </p>
-            </div>
-
-            <div class="mt-6">
-              <h3 class="sr-only">Review data</h3>
-
-              <dl class="space-y-3">
-                <div
-                  v-for="count in reviews.counts"
-                  :key="count.rating"
-                  class="flex items-center text-sm"
-                >
-                  <dt class="flex flex-1 items-center">
-                    <p class="w-3 font-medium text-gray-900">
-                      {{ count.rating
-                      }}<span class="sr-only"> star reviews</span>
-                    </p>
-                    <div
-                      aria-hidden="true"
-                      class="ml-1 flex flex-1 items-center"
-                    >
-                      <StarIcon
-                        :class="[
-                          count.count > 0 ? 'text-yellow-400' : 'text-gray-300',
-                          'flex-shrink-0 h-5 w-5'
-                        ]"
-                        aria-hidden="true"
-                      />
-
-                      <div class="relative ml-3 flex-1">
-                        <div
-                          class="h-3 rounded-full border border-gray-200 bg-gray-100"
-                        />
-                        <div
-                          v-if="count.count > 0"
-                          class="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400"
-                          :style="{
-                            width: `calc(${count.count} / ${reviews.totalCount} * 100%)`
-                          }"
-                        />
-                      </div>
-                    </div>
-                  </dt>
-                  <dd
-                    class="ml-3 w-10 text-right text-sm tabular-nums text-gray-900"
-                  >
-                    {{ Math.round((count.count / reviews.totalCount) * 100) }}%
-                  </dd>
-                </div>
-              </dl>
-            </div>
-
-            <div class="mt-10">
-              <h3 class="text-lg font-medium text-gray-900">
-                Share your thoughts
-              </h3>
-              <p class="mt-1 text-sm text-gray-600">
-                If you’ve used this product, share your thoughts with other
-                customers
-              </p>
-
-              <a
-                href="#"
-                class="mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-8 text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full"
-                >Write a review</a
+        <div class="w-full flex items-center justify-between gap-6">
+          <div class="w-full">
+            <div class="lg:col-span-4">
+              <h2
+                id="reviews-heading"
+                class="text-2xl font-bold tracking-tight text-gray-900"
               >
+                Customer Reviews
+              </h2>
+
+              <div class="mt-3 flex items-center">
+                <div>
+                  <div class="flex items-center">
+                    <StarIcon
+                      v-for="rating in [0, 1, 2, 3, 4]"
+                      :key="rating"
+                      :class="[
+                        reviews.average > rating
+                          ? 'text-yellow-400'
+                          : 'text-gray-300',
+                        'flex-shrink-0 h-5 w-5'
+                      ]"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <p class="sr-only">{{ reviews.average }} out of 5 stars</p>
+                </div>
+                <p class="ml-2 text-sm text-gray-900">
+                  Based on {{ reviews.totalCount }} reviews
+                </p>
+              </div>
+
+              <div class="mt-6">
+                <h3 class="sr-only">Review data</h3>
+
+                <dl class="space-y-3">
+                  <div
+                    v-for="count in reviews.counts"
+                    :key="count.rating"
+                    class="flex items-center text-sm"
+                  >
+                    <dt class="flex flex-1 items-center">
+                      <p class="w-3 font-medium text-gray-900">
+                        {{ count.rating
+                        }}<span class="sr-only"> star reviews</span>
+                      </p>
+                      <div
+                        aria-hidden="true"
+                        class="ml-1 flex flex-1 items-center"
+                      >
+                        <StarIcon
+                          :class="[
+                            count.count > 0
+                              ? 'text-yellow-400'
+                              : 'text-gray-300',
+                            'flex-shrink-0 h-5 w-5'
+                          ]"
+                          aria-hidden="true"
+                        />
+
+                        <div class="relative ml-3 flex-1">
+                          <div
+                            class="h-3 rounded-full border border-gray-200 bg-gray-100"
+                          />
+                          <div
+                            v-if="count.count > 0"
+                            class="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400"
+                            :style="{
+                              width: `calc(${count.count} / ${reviews.totalCount} * 100%)`
+                            }"
+                          />
+                        </div>
+                      </div>
+                    </dt>
+                    <dd
+                      class="ml-3 w-10 text-right text-sm tabular-nums text-gray-900"
+                    >
+                      {{
+                        Math.round((count.count / reviews.totalCount) * 100)
+                      }}%
+                    </dd>
+                  </div>
+                </dl>
+              </div>
             </div>
+          </div>
+          <div v-if="showComponent" class="w-full">
+            <!-- RESULT Frame -->
+            <ResultFrame
+              v-for="input in Object.values(productReviewInput)"
+              :key="input.id"
+              :result="input.result"
+              :isInputVulnerable="shopStore.isInputVulnerable(input.id)"
+              :showComponent="showComponent"
+              :flagFound="flagFound"
+              :flag="flag"
+              :title="input.title"
+            ></ResultFrame>
+          </div>
+        </div>
+
+        <div>
+          <div class="mt-10 mb-3">
+            <h3 class="text-lg font-medium text-gray-900">
+              Share your thoughts
+            </h3>
+            <p class="mt-1 text-sm text-gray-600">
+              If you’ve used this product, share your thoughts with other
+              customers
+            </p>
+          </div>
+          <div class="flex justify-between">
+            <label
+              for="message"
+              class="block text-sm font-medium text-warm-gray-900"
+              >Message</label
+            >
+            <span id="message-max" class="text-sm text-warm-gray-500"
+              >Max. 500 characters</span
+            >
+          </div>
+          <div class="mt-1">
+            <textarea
+              v-model="productReviewInput.product.value"
+              rows="4"
+              class="block w-full rounded-md border-warm-gray-300 py-3 px-4 text-warm-gray-900 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              aria-describedby="message-max"
+            />
+          </div>
+          <div class="sm:col-span-2 sm:flex sm:justify-end">
+            <button
+              class="mt-2 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-primary-500 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
+              @click="submitInput"
+            >
+              <LoadingIcon
+                v-if="loading"
+                class="-ml-1 mr-3 h-5 w-5 text-white"
+              />
+              <slot />
+              Write a review
+            </button>
           </div>
         </div>
       </div>
@@ -235,25 +280,56 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router'
-import {
-  ShieldCheckIcon,
-} from '@heroicons/vue/24/outline'
-import {
-  StarIcon
-} from '@heroicons/vue/20/solid'
+import { useRoute } from 'vue-router'
+import { ShieldCheckIcon } from '@heroicons/vue/24/outline'
+import { StarIcon } from '@heroicons/vue/20/solid'
 import { useShopStore } from '@/store/shop'
 import { ref } from 'vue'
+import useFlagMethods from '@/composables/useFlagMethods'
+import ResultFrame from '@/components/ResultFrame.vue'
+import LoadingIcon from '@/components/LoadingIcon.vue'
 
+const showComponent = ref(false)
 const route = useRoute()
+const loading = ref(false)
 
 const shopStore = useShopStore()
 const productDetail: any = ref(
   shopStore.getProductById(Number(route.params.id))
 )
 
-const router = useRouter()
+const productReviewInput = ref({
+  product: {
+    id: (productDetail.value.id + 6).toString(), // We use +6 to ide because we have 6 previous inputs with id's
+    value: 'Great product',
+    title: 'product',
+    result: null
+  }
+})
 
+// Composable to import vulnerable logic to call flag. getFlag method is called dynamically it is not used nowhere in code
+const { flagFound, flag, getFlag } = useFlagMethods()
+
+// Method to process input in store
+function submitInput() {
+  loading.value = true
+  showComponent.value = false
+  flag.value = ''
+  flagFound.value = false
+
+  Object.values(productReviewInput.value).map((element) => {
+    setTimeout(() => {
+      element.result = shopStore.processValue({
+        id: element.id,
+        value: element.value
+      })
+    })
+  })
+  showComponent.value = true
+  loading.value = false
+}
+
+// Mocked data
 const policies = [
   {
     name: 'Free delivery all year long',
@@ -297,7 +373,7 @@ const reviews = {
   featured: [
     {
       id: 1,
-      rating: 5,
+      rating: 5
     }
   ]
 }

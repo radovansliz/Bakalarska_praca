@@ -96,16 +96,11 @@ export const useShopStore = defineStore('shop', {
   actions: {
     processValue(inputObject: { id: string; value: any }) {
       if (this.isInputVulnerable(inputObject.id)) {
-        console.log(
-          'INPUT OBJECT RAW',
-          inputObject.value.replace(/<script[^>]*>([\s\S]*?)<\/script>/g, '$1')
-        )
         return inputObject.value.replace(
           /<script[^>]*>([\s\S]*?)<\/script>/g,
           '$1'
         )
       } else {
-        console.log('INPUT OBJECT SANITIZED', sanitizeHTML(inputObject).toString)
         return sanitizeHTML(inputObject.value)
           ? sanitizeHTML(inputObject.value)
           : 'Nothing to show'

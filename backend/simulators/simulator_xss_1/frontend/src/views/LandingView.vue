@@ -267,6 +267,12 @@
                       class="flex w-full items-center justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white"
                       @click="submitInput"
                     >
+                      <LoadingIcon
+                        v-if="loading"
+                        class="-ml-1 mr-3 h-5 w-5 text-white"
+                      />
+                      <slot />
+
                       Sign up
                     </button>
                   </div>
@@ -348,9 +354,11 @@ import { useShopStore } from '@/store/shop'
 import { ref } from 'vue'
 import ResultFrame from '@/components/ResultFrame.vue'
 import useFlagMethods from '@/composables/useFlagMethods'
+import LoadingIcon from '@/components/LoadingIcon.vue'
 
 const shopStore = useShopStore()
 const showComponent = ref(false)
+const loading = ref(false)
 
 const newsLetterInput = ref({
   id: '1',
@@ -364,9 +372,10 @@ const isInputVulnerable = ref(
 // Composable to import vulnerable logic to call flag. getFlag method is called dynamically it is not used nowhere in code
 const { result, flagFound, flag, getFlag } = useFlagMethods()
 
-
 // Method to process input in store
 function submitInput() {
+  loading.value = true
+
   result.value = null
   showComponent.value = false
 
@@ -374,8 +383,8 @@ function submitInput() {
     result.value = shopStore.processValue(newsLetterInput.value)
     showComponent.value = true
   }, 1000)
+  loading.value = false
 }
-
 
 // Mocked data variables
 const offers = [

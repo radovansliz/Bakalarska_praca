@@ -1,6 +1,28 @@
 <template>
   <div class="w-full overflow-y-auto p-4 bg-white">
     <main>
+      <!-- Instructions -->
+      <div class="rounded-md bg-yellow-50 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <InformationCircleIcon
+              class="h-5 w-5 text-yellow-400"
+              aria-hidden="true"
+            />
+          </div>
+          <div class="ml-3 flex-1 font-bold">
+            <p class="text-base text-yellow-700">
+              1. Nájdite XSS zraniteľnosť webovej aplikácie
+            </p>
+            <p class="text-base text-yellow-700">
+              2. Využite zraniteľnosť a zavolajte metódu flag.getFlag()
+            </p>
+            <p class="text-base text-yellow-700">
+              3. Prezentujte nájdený výsledok - FLAG
+            </p>
+          </div>
+        </div>
+      </div>
       <!-- Hero -->
       <div class="flex flex-col border-b border-gray-200 lg:border-0">
         <nav aria-label="Offers" class="order-last lg:order-first">
@@ -355,6 +377,7 @@ import { ref } from 'vue'
 import ResultFrame from '@/components/ResultFrame.vue'
 import useFlagMethods from '@/composables/useFlagMethods'
 import LoadingIcon from '@/components/LoadingIcon.vue'
+import { InformationCircleIcon } from '@heroicons/vue/20/solid'
 
 const shopStore = useShopStore()
 const showComponent = ref(false)

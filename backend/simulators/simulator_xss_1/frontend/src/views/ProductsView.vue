@@ -33,13 +33,8 @@
 </template>
 <script setup lang="ts">
 import { useShopStore } from '@/store/shop'
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
-const router = useRouter()
-const goBack = () => {
-  router.go(-1)
-}
 const shopStore = useShopStore()
 
 const products: any = ref(shopStore.produtItems)

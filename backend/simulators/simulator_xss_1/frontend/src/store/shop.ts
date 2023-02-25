@@ -1,6 +1,4 @@
-import { markRaw } from 'vue'
-import router from '@/router/index'
-import { defineStore, createPinia } from 'pinia'
+import { defineStore } from 'pinia'
 import sanitizeHTML from 'sanitize-html'
 
 export const useShopStore = defineStore('shop', {

@@ -83,7 +83,9 @@ export const useShopStore = defineStore('shop', {
         state.products.find((product: any) => product.id === id)
     },
     getVulnerableInputNumber(state) {
-      return import.meta.env.VITE_AIS_ID % state.numberOfInputs
+      return import.meta.env.VITE_AIS_ID % state.numberOfInputs === 0
+        ? 10
+        : import.meta.env.VITE_AIS_ID % state.numberOfInputs
     },
     isInputVulnerable(state) {
       return (id: string): any =>

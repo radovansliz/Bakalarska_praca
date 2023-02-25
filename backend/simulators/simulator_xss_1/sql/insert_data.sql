@@ -1,0 +1,3 @@
+INSERT INTO Flags (flag)
+VALUES
+('CTF_SHOP_FLAG_FOUND');

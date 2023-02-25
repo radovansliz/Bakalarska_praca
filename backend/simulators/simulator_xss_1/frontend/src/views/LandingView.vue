@@ -298,18 +298,14 @@
           </div>
         </div>
 
-        <div class="w-full py-5">
-          <div class="full text-lg font-bold text-gray-600 mb-4">
-            Result of input
-          </div>
-          <h3>Here is your result:</h3>
-          <component v-if="isInputVulnerable && showComponent" is="script">
-            {{ result }}</component
-          >
-          <div v-if="!isInputVulnerable && showComponent">{{ result }}</div>
-          <div v-html="test">
-          </div>
-        </div>
+        <!-- RESULT Frame -->
+        <ResultFrame
+          :result="result"
+          :isInputVulnerable="isInputVulnerable"
+          :showComponent="showComponent"
+          :flagFound="flagFound"
+          :flag="flag"
+        ></ResultFrame>
 
         <div class="py-10 md:flex md:items-center md:justify-between">
           <div class="text-center md:text-left">
@@ -348,61 +344,40 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router'
 import { useShopStore } from '@/store/shop'
-import { ref, reactive, onMounted } from 'vue'
-import { useScriptTag } from '@vueuse/core'
+import { ref } from 'vue'
+import ResultFrame from '@/components/ResultFrame.vue'
+import useFlagMethods from '@/composables/useFlagMethods'
 
-const router = useRouter()
-const route = useRoute()
 const shopStore = useShopStore()
 const showComponent = ref(false)
 
 const newsLetterInput = ref({
-  id: '2',
+  id: '1',
   value: ''
 })
 
 const isInputVulnerable = ref(
   shopStore.isInputVulnerable(newsLetterInput.value.id)
 )
-console.log('isInputVulnerable', isInputVulnerable.value)
-const result = ref('')
 
-// TOTO JE MOZNO CESTA
-// const test = ref(`<img src="x" onerror="alert(1)" />`)
+// Composable to import vulnerable logic to call flag. getFlag method is called dynamically it is not used nowhere in code
+const { result, flagFound, flag, getFlag } = useFlagMethods()
 
-const state = reactive({
-  result: ''
-})
 
-//@ts-ignore
-const resultContainer = ref<HTMLDivElement>(null)
-
+// Method to process input in store
 function submitInput() {
-  result.value = ''
+  result.value = null
   showComponent.value = false
 
   setTimeout(() => {
     result.value = shopStore.processValue(newsLetterInput.value)
     showComponent.value = true
-    console.log('result', state.result)
   }, 1000)
-  // useScriptTag(
-  //   'https://player.twitch.tv/js/embed/v1.js',
-  //   // on script tag loaded.
-  //   (el: HTMLScriptElement) => {
-  //     alert('AHOJ')
-  //   }
-  // )
 }
 
-onMounted(() => {
-  setTimeout(() => {
-    resultContainer.value.innerHTML = state.result
-  }, 0)
-})
 
+// Mocked data variables
 const offers = [
   {
     name: 'Download the app',

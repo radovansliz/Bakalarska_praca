@@ -6,13 +6,13 @@
     <div class="flex-shrink-0 flex items-center mb-2">
       <InformationCircleIcon class="h-5 w-5 text-blue-400" aria-hidden="true" />
       <span class="full text-xl font-bold text-gray-600 ml-2">
-        Result of input
+        Result of input <span class="text-blue-400">{{ title }}</span>
       </span>
     </div>
 
     <h3 class="font-bold text-gray-600 mb-3">Here is your result:</h3>
 
-    <div v-if="!isInputVulnerable && showComponent" class="font-bold text-lg">
+    <div v-if="!isInputVulnerable && showComponent" class="font-bold text-primary-600 text-lg">
       {{ result }}
     </div>
     <div
@@ -21,8 +21,8 @@
       class="font-bold text-xl text-primary-600"
     ></div>
     <div
-      v-if="flagFound"
-      class="w-full flex items-center justify-center font-bold text-2xl p-4"
+      v-if="flagFound && isInputVulnerable"
+      class="w-full flex items-center justify-center font-bold text-2xl p-4 text-red-600"
     >
       {{ flag }}
     </div>
@@ -51,6 +51,12 @@ const props = defineProps({
   showComponent: {
     type: Boolean,
     required: true
+  },
+  title: {
+    type: String,
+    required: false,
+    default: 'The only one input'
   }
 })
+
 </script>

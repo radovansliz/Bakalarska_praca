@@ -18,9 +18,7 @@
               >
               <div class="mt-1">
                 <input
-                  id="email"
-                  name="email"
-                  v-model="signInForm.email"
+                  v-model="signInForm.email.value"
                   class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-button-color focus:outline-none focus:ring-button-color sm:text-sm"
                 />
               </div>
@@ -34,9 +32,7 @@
               >
               <div class="mt-1">
                 <input
-                  id="password"
-                  name="password"
-                  v-model="signInForm.password"
+                  v-model="signInForm.password.value"
                   class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-button-color focus:outline-none focus:ring-button-color sm:text-sm"
                 />
               </div>
@@ -69,7 +65,8 @@
             <div>
               <button
                 class="flex w-full justify-center rounded-md border border-transparent bg-button-color py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-button-color focus:outline-none focus:ring-2 focus:ring-button-color focus:ring-offset-2"
-                >
+                @click="submitInput"
+              >
                 Sign in
               </button>
             </div>
@@ -77,27 +74,66 @@
         </div>
       </div>
     </div>
-    <div v-if="response">
-      <InfoAlert :content="response"></InfoAlert>
+    <div v-if="showComponent" class="w-full">
+      <!-- RESULT Frame -->
+      <ResultFrame
+        v-for="input in Object.values(signInForm)"
+        :key="input.id"
+        :result="input.result"
+        :isInputVulnerable="shopStore.isInputVulnerable(input.id)"
+        :showComponent="showComponent"
+        :flagFound="flagFound"
+        :flag="flag"
+        :title="input.title"
+      ></ResultFrame>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
-import InfoAlert from '@/components/InfoAlert.vue'
-import { useApiFetch } from '@/composables/useApi';
+import { computed, ref } from 'vue'
+import useFlagMethods from '@/composables/useFlagMethods'
+import { useShopStore } from '@/store/shop'
+import ResultFrame from '@/components/ResultFrame.vue'
 
 const router = useRouter()
 const response: any = ref(null)
 const loader = ref(false)
+const shopStore = useShopStore()
+const showComponent = ref(false)
+
 const signInForm = ref({
-  email: '',
-  password: '',
+  email: {
+    id: '2',
+    value: '',
+    title: 'email',
+    result: null
+  },
+  password: {
+    id: '3',
+    value: '',
+    title: 'password',
+    result: null
+  }
 })
 
+// Composable to import vulnerable logic to call flag. getFlag method is called dynamically it is not used nowhere in code
+const { flagFound, flag, getFlag } = useFlagMethods()
 
-const goBack = () => {
-  router.go(-1)
+// Method to process input in store
+function submitInput() {
+  showComponent.value = false
+  flag.value = ''
+  flagFound.value = false
+
+  Object.values(signInForm.value).map((element) => {
+    setTimeout(() => {
+      element.result = shopStore.processValue({
+        id: element.id,
+        value: element.value
+      })
+    })
+  })
+  showComponent.value = true
 }
 </script>

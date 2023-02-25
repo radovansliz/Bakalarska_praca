@@ -14,6 +14,7 @@ declare module '*.vue' {
 interface ImportMeta {
   env: {
     VITE_API_HOST: string
+    VITE_AIS_ID: number
   }
 }
 

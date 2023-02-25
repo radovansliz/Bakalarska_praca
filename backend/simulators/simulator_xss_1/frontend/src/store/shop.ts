@@ -3,7 +3,6 @@ import router from '@/router/index'
 import { defineStore, createPinia } from 'pinia'
 import sanitizeHTML from 'sanitize-html'
 
-
 export const useShopStore = defineStore('shop', {
   state: () => {
     return {
@@ -72,7 +71,8 @@ export const useShopStore = defineStore('shop', {
             { name: 'Chrome', colorBg: '#E5E7EB' }
           ]
         }
-      ]
+      ],
+      numberOfInputs: 10
     }
   },
 
@@ -84,15 +84,18 @@ export const useShopStore = defineStore('shop', {
       return (id: string | number): any =>
         state.products.find((product: any) => product.id === id)
     },
+    getVulnerableInputNumber(state) {
+      return import.meta.env.VITE_AIS_ID % state.numberOfInputs
+    },
     isInputVulnerable(state) {
-      return (id: string): any => id === '1'
+      return (id: string): any =>
+        id.toString() === this.getVulnerableInputNumber.toString()
     }
   },
 
   actions: {
     processValue(inputObject: { id: string; value: any }) {
-      console.log('INPUT OBJECT', inputObject)
-      if (inputObject.id === '1') {
+      if (this.isInputVulnerable(inputObject.id)) {
         console.log(
           'INPUT OBJECT RAW',
           inputObject.value.replace(/<script[^>]*>([\s\S]*?)<\/script>/g, '$1')
@@ -102,11 +105,11 @@ export const useShopStore = defineStore('shop', {
           '$1'
         )
       } else {
-        console.log('INPUT OBJECT SANITIZED', sanitizeHTML(inputObject))
-        return sanitizeHTML(inputObject.value) !== ''
+        console.log('INPUT OBJECT SANITIZED', sanitizeHTML(inputObject).toString)
+        return sanitizeHTML(inputObject.value)
           ? sanitizeHTML(inputObject.value)
           : 'Nothing to show'
       }
-    },
+    }
   }
 })

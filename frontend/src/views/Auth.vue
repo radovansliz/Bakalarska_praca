@@ -31,7 +31,6 @@
                   id="asiId"
                   name="asiId"
                   type="number"
-                  required=""
                   class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
               </div>
@@ -67,10 +66,21 @@
             <div>
               <button
                 @click="startSimulator"
-                class="mt-4 flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                class="mt-4 flex w-full justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
               >
+                <LoadingIcon
+                  v-if="loading"
+                  class="-ml-1 mr-3 h-5 w-5 text-white"
+                />
+                <slot />
                 Start
               </button>
+              <div
+                v-if="loading"
+                class="w-full flex items-center text-xs font-sans text-primary-500 mt-3"
+              >
+                Simulator is starting. It might take a few minutes...
+              </div>
             </div>
           </div>
         </div>
@@ -80,12 +90,10 @@
         <div class="bg-white">
           <div class="mx-auto max-w-7xl py-16 px-6 sm:py-24 lg:px-8">
             <div class="text-center">
-              <h2 class="text-base font-semibold text-indigo-600">
+              <h2 class="text-base font-semibold text-primary-600">
                 CTF Simulations
               </h2>
-              <p
-                class="mt-1 text-4xl font-bold tracking-tight text-gray-900"
-              >
+              <p class="mt-1 text-4xl font-bold tracking-tight text-gray-900">
                 Simulator is ready
               </p>
               <p class="mx-auto mt-5 max-w-xl text-base text-gray-500">
@@ -95,7 +103,7 @@
                 <a
                   :href="simulatorResponse.url"
                   target="_blank"
-                  class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  class="inline-flex items-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                   >Continue</a
                 >
               </div>
@@ -107,14 +115,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
 import { useApiFetch } from '@/composables/useApi'
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
+import LoadingIcon from '@/components/LoadingIcon.vue'
 
-const router = useRouter()
-const goBack = () => {
-  router.go(-1)
-}
+const loading = ref(false)
 
 const aisId = ref(null)
 const enterIdError = ref(false)
@@ -127,6 +132,8 @@ async function startSimulator() {
     return
   }
 
+  loading.value = true
+
   const { response, data } = await useApiFetch('start')
     .post({
       id: aisId.value
@@ -135,6 +142,7 @@ async function startSimulator() {
 
   simulatorResponse.value = data.value
 
+  loading.value = false
   console.log('STATUS CODE', response.value)
 }
 </script>

@@ -1,4 +1,7 @@
-simulators = ["simulator_1"]
+simulators = [
+    "simulator_xss",
+    "simulator_sql",
+]
 
 # Function to get random number of simulator based on AIS ID seed and return simulator name
 def get_random_simulator_select(aisId: int) -> str:

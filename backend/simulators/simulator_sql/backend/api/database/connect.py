@@ -1,6 +1,7 @@
 import psycopg2
 import os
 
+
 def create_db_connection(db_name: str = None):
     db_name = db_name or os.getenv("DATABASE_NAME")
 
@@ -19,15 +20,25 @@ def close_db_connection(cursor, connection):
     cursor.close()
     connection.close()
 
+
 def execute_query(query, arguments=None):
     connection = create_db_connection()
     cursor = connection.cursor()
     if not arguments:
         cursor.execute(query)
     else:
-        cursor.execute(query,arguments)
+        cursor.execute(query, arguments)
     result = cursor.fetchall()
     connection.commit()
     close_db_connection(cursor, connection)
     return result
 
+
+def insert_starting_data():
+    connection = create_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(open("../../sql/create_tables.sql", "r").read())
+    cursor.execute(open("../../sql/insert_data.sql", "r").read())
+    result = cursor.fetchall()
+    connection.commit()
+    close_db_connection(cursor, connection)

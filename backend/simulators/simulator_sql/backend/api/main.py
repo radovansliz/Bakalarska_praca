@@ -19,3 +19,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# db_module.insert_starting_data()

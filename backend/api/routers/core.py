@@ -1,10 +1,15 @@
 from fastapi import APIRouter, Body, HTTPException
 from pydantic import BaseModel, validator
+import os
 
 # import api.database.connect as db_module
 from api.helpers.simulator import get_random_simulator_select
 
-from api.docker.handler import init_simulator_compose, start_simulator_compose
+from api.docker.handler import (
+    init_simulator_compose,
+    start_simulator_compose,
+    docker_instance,
+)
 
 router = APIRouter()
 
@@ -27,7 +32,7 @@ class BaseUserModel(BaseModel):
 
 @router.get("/health")
 def healthcheck():
-    return {"status": 200, "message": "Alive as never before."}
+    return {"status": 200, "message": "Alive as never beforee."}
 
 
 @router.post("/start")
@@ -45,17 +50,21 @@ async def start_simulator(user: BaseUserModel = Body(...)):
         simulator = get_random_simulator_select(user_id)
 
         # Nahranie AIS ID do ENV simulatora
-        # ? Pozor toto mozno nevracia spravne instanciu DockerClient lebo tu neni importnuty package
-        docker_client = init_simulator_compose(simulator, str(user_id))
-
+        # docker_instance = init_simulator_compose(simulator, str(user_id))
         # TODO: Spustenie simulatora
-        # ! Toto este nefunguje lebo nam chyba docker compose file pre dany simulator
-        start_simulator_compose(docker_client)
+        # host_port = start_simulator_compose(docker_instance)
+        # simulator_url = "https://localhost:" + host_port
+        
+        skuska = start_simulator_compose()
+        #  print(skuska)
+
         # TODO: Ulozenie udajov do globalnej DB
 
-        # print(response)
-        # return response
-        return {"user_id": user_id, "simulator": simulator, "url": "https://github.com"}
+        return {
+            "user_id": user_id,
+            "simulator": simulator,
+            "url": "http://localhost:2001",
+        }
     except ValueError as e:
         # raise HTTPException(
         #     status_code=400,

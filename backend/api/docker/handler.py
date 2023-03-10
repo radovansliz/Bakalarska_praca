@@ -4,6 +4,7 @@ import functools
 import asyncio
 import multiprocessing
 import docker
+import pathlib
 
 docker_instance = None
 
@@ -26,7 +27,7 @@ def init_simulator_compose(sim_name: str, user_id: str) -> DockerClient:
 
 
 def start_simulator_compose():
-    docker = DockerClient()
+    docker = DockerClient(debug=True)
     # Run BE container
     # be_context_path = os.path.join(os.getcwd(),"backend", "simulators", "simulator_1", "backend") # FOR LOCAL NOT FROM DOCKER
     simulator_path = os.path.join(os.getcwd(), "simulators", "simulator_sql")
@@ -44,44 +45,51 @@ def start_simulator_compose():
         be_context_path, platforms=["linux/amd64"], cache=True, tags=["sim_be_latest"]
     )
 
-    # Toto je DB
+    # TOTO JE CISTO TEST -- - - -- - -- - -- - - START
+    path = pathlib.Path("simulators/simulator_sql/database-data")
+    print(f"PATH: ", path)
+    print(f"ABSOLUTE PATH: ", path.absolute())
+
+    db_volumes = [
+        (
+            # pathlib.Path("simulators/simulator_sql/sql/create_tables.sql").absolute(),
+            "/Users/radovansliz/Bakalarka/Bakalarska_praca/backend/simulators/simulator_sql/sql/create_tables.sql",
+            "/docker-entrypoint-initdb.d/create_tables.sql",
+        ),
+        (
+            "/Users/radovansliz/Bakalarka/Bakalarska_praca/backend/simulators/simulator_sql/sql/insert_data.sql",
+            "/docker-entrypoint-initdb.d/insert_data.sql",
+        ),
+    ]
+
+    simulator_network = docker.network.create("simulator_sql")
+
+    # # Toto je DB
     db_container = docker.run(
-        "postgres",
+        "postgres:latest",
         name="simulator_database",
+        hostname="simulator_database",
         envs={
             "POSTGRES_PASSWORD": "postgres",
             "POSTGRES_DB": "simulator",
             "PGDATA": "/var/lib/postgresql/data",
         },
         publish=[(6544, 5432)],
-        # volumes=[
-        #     (
-        #         "/simulators/simulator_sql/database-data",
-        #         "/var/lib/postgresql/data",
-        #     ),
-        #     (
-        #         "/simulators/simulator_sql/sql/create_tables.sql",
-        #         "/docker-entrypoint-initdb.d/create_tables.sql",
-        #     ),
-        #     (
-        #         os.path.join(simulator_path + "/sql/insert_data.sql"),
-        #         "/docker-entrypoint-initdb.d/insert_data.sql",
-        #     ),
-        # ],
+        volumes=db_volumes,
         detach=True,
         remove=True,
         labels={"source": "simulator_database"},
+        networks=[simulator_network],
     )
 
-    # TOTO JE FUNKCNA VERZIA
     be_container = docker.run(
         # platform="linux/amd64",
         image=be_image2,
         # volumes=[(be_volume_path, "/api")],
         # command=["uvicorn api.main:app  --host 0.0.0.0 --port 81"],
         envs={
-            "DATABASE_HOST": "database",
-            "DATABASE_NAME": "test",
+            "DATABASE_HOST": "simulator_database",
+            "DATABASE_NAME": "simulator",
             "DATABASE_USER": "postgres",
             "DATABASE_PASSWORD": "postgres",
             "DATABASE_PORT": 5432,
@@ -90,10 +98,61 @@ def start_simulator_compose():
         name="simulator_backend",
         detach=True,
         remove=False,
+        networks=[simulator_network],
     )
 
-    print(f"DB CONTAINER: ", db_container)
-    print(f"BE COntainer: ", be_container)
+    # TOTO JE CISTO TEST ----- - - -- -- - - - -- - - END
+
+    # # Toto je DB
+    # db_container = docker.run(
+    #     "postgres",
+    #     name="simulator_database",
+    #     envs={
+    #         "POSTGRES_PASSWORD": "postgres",
+    #         "POSTGRES_DB": "simulator",
+    #         "PGDATA": "/var/lib/postgresql/data",
+    #     },
+    #     publish=[(6544, 5432)],
+    #     # volumes=[
+    #     #     (
+    #     #         "/simulators/simulator_sql/database-data",
+    #     #         "/var/lib/postgresql/data",
+    #     #     ),
+    #     #     (
+    #     #         "/simulators/simulator_sql/sql/create_tables.sql",
+    #     #         "/docker-entrypoint-initdb.d/create_tables.sql",
+    #     #     ),
+    #     #     (
+    #     #         os.path.join(simulator_path + "/sql/insert_data.sql"),
+    #     #         "/docker-entrypoint-initdb.d/insert_data.sql",
+    #     #     ),
+    #     # ],
+    #     detach=True,
+    #     remove=True,
+    #     labels={"source": "simulator_database"},
+    # )
+
+    # # TOTO JE FUNKCNA VERZIA
+    # be_container = docker.run(
+    #     # platform="linux/amd64",
+    #     image=be_image2,
+    #     # volumes=[(be_volume_path, "/api")],
+    #     # command=["uvicorn api.main:app  --host 0.0.0.0 --port 81"],
+    #     envs={
+    #         "DATABASE_HOST": "database",
+    #         "DATABASE_NAME": "test",
+    #         "DATABASE_USER": "postgres",
+    #         "DATABASE_PASSWORD": "postgres",
+    #         "DATABASE_PORT": 5432,
+    #     },
+    #     publish=[(2001, 81)],
+    #     name="simulator_backend",
+    #     detach=True,
+    #     remove=False,
+    # )
+
+    # print(f"DB CONTAINER: ", db_container)
+    # print(f"BE COntainer: ", be_container)
 
     # docker.compose.up(detach=True)
 

@@ -1,7 +1,6 @@
 import psycopg2
 import os
 
-
 def create_db_connection(db_name: str = None):
     db_name = db_name or os.getenv("DATABASE_NAME")
 

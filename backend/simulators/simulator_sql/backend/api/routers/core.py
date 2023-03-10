@@ -22,6 +22,13 @@ def healthcheck():
     return {"status": 200, "message": "Alive as never before."}
 
 
+@router.get("/dbcheck")
+def dbcheck():
+    query = "SELECT * FROM clients"
+    result = execute_query(query)
+    return {"status": 200, "message": "Alive as never before.", "response": result}
+
+
 @router.post("/mortgage-interest")
 @router.post("/newsletter")
 @router.post("/signin")
@@ -34,7 +41,7 @@ def create_object(payload: BaseFormModel = Body(...)):
             result = None
             if str(object.id) == is_vulnerable:
                 # Vulnerable to SQL Injection
-                if vulnerability_type == '1':
+                if vulnerability_type == "1":
                     # First vulnerability type: Need to add '; and then type query
                     query = f"SELECT * FROM clients WHERE name = '{find_object_in_payload(payload, object.name)}"
                 else:

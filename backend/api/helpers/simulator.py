@@ -1,5 +1,5 @@
 simulators = [
-    "simulator_xss",
+    "simulator_xss_1",
     "simulator_sql",
 ]
 

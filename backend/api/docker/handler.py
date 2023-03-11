@@ -26,49 +26,78 @@ def init_simulator_compose(sim_name: str, user_id: str) -> DockerClient:
     return docker
 
 
-def start_simulator_compose():
+# Method to check if simulator part image exists or need to be built
+# Returns image instance
+# sim_name = Simulator name - if it's SQL Injection simulator or any other
+# service_type = "backend" or "frontend"
+def get_simulator_service_image(sim_name: str, service_type: str):
     docker = DockerClient(debug=True)
-    # Run BE container
-    # be_context_path = os.path.join(os.getcwd(),"backend", "simulators", "simulator_1", "backend") # FOR LOCAL NOT FROM DOCKER
-    simulator_path = os.path.join(os.getcwd(), "simulators", "simulator_sql")
-    print(f"SIMULATOR PATH: ", os.getcwd())
-    be_context_path = os.path.join(
-        os.getcwd(), "simulators", "simulator_sql", "backend"
-    )
 
-    fe_context_path = os.path.join(
-        os.getcwd(), "simulators", "smulator_sql", "frontend"
-    )
+    # Image has name of simulator
+    image_name = sim_name + "_" + service_type + "_image"
 
-    # TOTO JE POUZIVANY BE IMAGE
-    be_image2 = docker.buildx.build(
-        be_context_path, platforms=["linux/amd64"], cache=True, tags=["sim_be_latest"]
-    )
+    # Initialize empty image
+    docker_image = None
 
-    # TOTO JE CISTO TEST -- - - -- - -- - -- - - START
-    path = pathlib.Path("simulators/simulator_sql/database-data")
-    print(f"PATH: ", path)
-    print(f"ABSOLUTE PATH: ", path.absolute())
+    # Check if image is built
+    if docker.image.exists(image_name):
+        print("Existuje")
+        docker_image = docker.image.inspect(image_name)
+    else:
+        print("Neexistuje")
+        # Path to simulator backend code
+        context_path = os.path.join(os.getcwd(), "simulators", sim_name, service_type)
 
+        # Build image
+        docker_image = docker.buildx.build(
+            context_path, platforms=["linux/amd64"], cache=True, tags=[image_name]
+        )
+
+    print(docker_image)
+    return docker_image
+
+
+def start_simulator_compose(sim_name: str, userId: int):
+    docker = DockerClient(debug=True)
+
+    # Simulator backend image
+    sim_be_image = get_simulator_service_image(sim_name, "backend")
+    print(f"IMAGE EXISTUJE: ", sim_be_image)
+    # Simulator Database container
     db_volumes = [
         (
-            # pathlib.Path("simulators/simulator_sql/sql/create_tables.sql").absolute(),
-            "/Users/radovansliz/Bakalarka/Bakalarska_praca/backend/simulators/simulator_sql/sql/create_tables.sql",
+            "/Users/radovansliz/Bakalarka/Bakalarska_praca/backend/simulators/"
+            + sim_name
+            + "/sql/create_tables.sql",
+            # os.path.join(
+            #     os.getcwd(), "simulators", sim_name, "sql", "create_tables.sql"
+            # ),
             "/docker-entrypoint-initdb.d/create_tables.sql",
         ),
         (
-            "/Users/radovansliz/Bakalarka/Bakalarska_praca/backend/simulators/simulator_sql/sql/insert_data.sql",
+            "/Users/radovansliz/Bakalarka/Bakalarska_praca/backend/simulators/"
+            + sim_name
+            + "/sql/insert_data.sql",
+            # os.path.join(os.getcwd(), "simulators", sim_name, "sql", "insert_data.sql"),
             "/docker-entrypoint-initdb.d/insert_data.sql",
         ),
     ]
+    db_container = None
+    db_simulator_name = str(userId) + "_" + sim_name + "_" + "database"
 
-    simulator_network = docker.network.create("simulator_sql")
+    # Simulator Backend container
+    be_simulator_name = str(userId) + "_" + sim_name + "_" + "backend"
+    be_container = None
 
-    # # Toto je DB
-    db_container = docker.run(
+    # Create isolated docker network for simulator specified by simulator name and user's ID
+    simulator_docker_network = docker.network.create(str(userId) + "_" + sim_name)
+    # Network is removed even if containers fail
+
+    # Run containers
+    docker.run(
         "postgres:latest",
-        name="simulator_database",
-        hostname="simulator_database",
+        name=db_simulator_name,
+        hostname=db_simulator_name,
         envs={
             "POSTGRES_PASSWORD": "postgres",
             "POSTGRES_DB": "simulator",
@@ -78,93 +107,26 @@ def start_simulator_compose():
         volumes=db_volumes,
         detach=True,
         remove=True,
-        labels={"source": "simulator_database"},
-        networks=[simulator_network],
+        labels={"source": db_simulator_name},
+        networks=[simulator_docker_network],
     )
 
-    be_container = docker.run(
-        # platform="linux/amd64",
-        image=be_image2,
-        # volumes=[(be_volume_path, "/api")],
-        # command=["uvicorn api.main:app  --host 0.0.0.0 --port 81"],
+    docker.run(
+        image=sim_be_image,
+        name=be_simulator_name,
+        hostname=be_simulator_name,
         envs={
-            "DATABASE_HOST": "simulator_database",
+            "DATABASE_HOST": db_simulator_name,
             "DATABASE_NAME": "simulator",
             "DATABASE_USER": "postgres",
             "DATABASE_PASSWORD": "postgres",
             "DATABASE_PORT": 5432,
         },
         publish=[(2001, 81)],
-        name="simulator_backend",
         detach=True,
-        remove=False,
-        networks=[simulator_network],
+        remove=True,
+        labels={"source": be_simulator_name},
+        networks=[simulator_docker_network],
     )
 
-    # TOTO JE CISTO TEST ----- - - -- -- - - - -- - - END
-
-    # # Toto je DB
-    # db_container = docker.run(
-    #     "postgres",
-    #     name="simulator_database",
-    #     envs={
-    #         "POSTGRES_PASSWORD": "postgres",
-    #         "POSTGRES_DB": "simulator",
-    #         "PGDATA": "/var/lib/postgresql/data",
-    #     },
-    #     publish=[(6544, 5432)],
-    #     # volumes=[
-    #     #     (
-    #     #         "/simulators/simulator_sql/database-data",
-    #     #         "/var/lib/postgresql/data",
-    #     #     ),
-    #     #     (
-    #     #         "/simulators/simulator_sql/sql/create_tables.sql",
-    #     #         "/docker-entrypoint-initdb.d/create_tables.sql",
-    #     #     ),
-    #     #     (
-    #     #         os.path.join(simulator_path + "/sql/insert_data.sql"),
-    #     #         "/docker-entrypoint-initdb.d/insert_data.sql",
-    #     #     ),
-    #     # ],
-    #     detach=True,
-    #     remove=True,
-    #     labels={"source": "simulator_database"},
-    # )
-
-    # # TOTO JE FUNKCNA VERZIA
-    # be_container = docker.run(
-    #     # platform="linux/amd64",
-    #     image=be_image2,
-    #     # volumes=[(be_volume_path, "/api")],
-    #     # command=["uvicorn api.main:app  --host 0.0.0.0 --port 81"],
-    #     envs={
-    #         "DATABASE_HOST": "database",
-    #         "DATABASE_NAME": "test",
-    #         "DATABASE_USER": "postgres",
-    #         "DATABASE_PASSWORD": "postgres",
-    #         "DATABASE_PORT": 5432,
-    #     },
-    #     publish=[(2001, 81)],
-    #     name="simulator_backend",
-    #     detach=True,
-    #     remove=False,
-    # )
-
-    # print(f"DB CONTAINER: ", db_container)
-    # print(f"BE COntainer: ", be_container)
-
-    # docker.compose.up(detach=True)
-
-    # Find frontend service container
-    # frontend_container = None
-    # for container in docker.ps():
-    #     if container.name == "simulator_frontend":
-    #         frontend_container = container
-
-    # # Find host port in FE container and return it
-    # fe_internal_port = frontend_container.args[6]
-    # fe_host_port = frontend_container.host_config.port_bindings[
-    #     fe_internal_port + "/tcp"
-    # ][0].host_port
-    return "be_container"
+    return {"status": "done", "containers": {"be": be_container, "db": db_container}}

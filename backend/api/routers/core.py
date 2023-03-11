@@ -55,7 +55,7 @@ async def start_simulator(user: BaseUserModel = Body(...)):
         # host_port = start_simulator_compose(docker_instance)
         # simulator_url = "https://localhost:" + host_port
         
-        skuska = start_simulator_compose()
+        skuska = start_simulator_compose(simulator, user_id)
         #  print(skuska)
 
         # TODO: Ulozenie udajov do globalnej DB

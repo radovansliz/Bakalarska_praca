@@ -3,9 +3,11 @@ FROM node:lts-alpine
 RUN apk add curl
 RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
 
-#WORKDIR /app
 RUN mkdir /frontend
-COPY /frontend /frontend
+WORKDIR /frontend
+COPY package*.json ./
+
+COPY . .
 
 RUN pnpm install
 

@@ -1,38 +1,49 @@
-from fastapi import APIRouter, Body, HTTPException
-from pydantic import BaseModel, validator
-import os
-
-# import api.database.connect as db_module
+from fastapi import APIRouter, Body
+from pydantic import BaseModel
 from api.helpers.simulator import get_random_simulator_select
-
-from api.docker.handler import (
-    init_simulator_compose,
-    start_simulator_compose,
-    docker_instance,
-)
+from api.docker.handler import *
 
 router = APIRouter()
+database_simulator_container = None
+backend_simulator_container = None
+frontend_simulator_container = None
+simulator_network = None
+docker_client = None
 
 
 class BaseUserModel(BaseModel):
     id: int
-
-    # @validator("id")
-    # def ais_id_valid(cls, value):
-    #     if not isinstance(value, (int, str)):
-    #         raise ValueError("ID must be an int or a str")
-    #     if isinstance(value, (str)) and len(id) > 10:
-    #         raise ValueError(
-    #             "Provided ID is not valid. ID must not be longer than 10 characters"
-    #         )
-    #     else:
-    #         return id
     pass
 
 
 @router.get("/health")
 def healthcheck():
     return {"status": 200, "message": "Alive as never beforee."}
+
+@router.get("/stop")
+def stop_simulators():
+    try:
+        if (
+            database_simulator_container != None
+            and backend_simulator_container != None
+            and frontend_simulator_container != None
+        ):
+            docker_client.container.stop(
+                [
+                    frontend_simulator_container,
+                    backend_simulator_container,
+                    database_simulator_container,
+                ]
+            )
+        if simulator_network != None:
+            simulator_network.remove()
+        return {"status": 200, "message": "Running simulators stopped and removed"}
+    except ValueError as e:
+        return {
+            "success": False,
+            "error": "An error has occured, during removing containers and network",
+            "detail": str(e),
+        }
 
 
 @router.post("/start")
@@ -48,32 +59,29 @@ async def start_simulator(user: BaseUserModel = Body(...)):
 
         # Random funkcia vyberie simulator
         simulator = get_random_simulator_select(user_id)
+        # Spustenie simulatora
+        simulator_instance = start_simulator_compose(simulator, user_id)
 
-        # Nahranie AIS ID do ENV simulatora
-        # docker_instance = init_simulator_compose(simulator, str(user_id))
-        # TODO: Spustenie simulatora
-        # host_port = start_simulator_compose(docker_instance)
-        # simulator_url = "https://localhost:" + host_port
-        
-        skuska = start_simulator_compose(simulator, user_id)
-        #  print(skuska)
+        # Use global variables
+        global frontend_simulator_container
+        global database_simulator_container
+        global backend_simulator_container
+        global simulator_network
+        global docker_client
+        frontend_simulator_container = simulator_instance["containers"]["fe"]
+        database_simulator_container = simulator_instance["containers"]["db"]
+        backend_simulator_container = simulator_instance["containers"]["be"]
+        simulator_network = simulator_instance["network"]
+        docker_client = simulator_instance["docker_client"]
 
         # TODO: Ulozenie udajov do globalnej DB
 
         return {
             "user_id": user_id,
             "simulator": simulator,
-            "url": "http://localhost:2001",
+            "url": "http://localhost:3001",
         }
     except ValueError as e:
-        # raise HTTPException(
-        #     status_code=400,
-        #     detail={
-        #         "success": False,
-        #         "error": "Given AIS ID is not valid.",
-        #         "detail": str(e),
-        #     },
-        # )
         return {
             "success": False,
             "error": "Given AIS ID is not valid.",

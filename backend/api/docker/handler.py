@@ -1,30 +1,5 @@
 from python_on_whales import DockerClient
 import os
-import functools
-import asyncio
-import multiprocessing
-import docker
-import pathlib
-
-docker_instance = None
-
-
-def init_simulator_compose(sim_name: str, user_id: str) -> DockerClient:
-    compose_path = os.path.join(
-        os.getcwd(), "backend", "simulators", sim_name, "docker-compose.yaml"
-    )
-    os.system("ls -la")
-    os.system("echo skusme")
-    os.system("echo " + compose_path)
-    os.system("cat " + compose_path)
-    docker = DockerClient(compose_files=[compose_path])
-    # os.system('cat ' + str(docker))
-    # compose_config = docker.compose.config(return_json=True)
-    # compose_config.services["simulator_backend"].environment.update(
-    #     {"USER_ID": user_id}
-    # )
-    return docker
-
 
 # Method to check if simulator part image exists or need to be built
 # Returns image instance
@@ -62,7 +37,10 @@ def start_simulator_compose(sim_name: str, userId: int):
 
     # Simulator backend image
     sim_be_image = get_simulator_service_image(sim_name, "backend")
-    print(f"IMAGE EXISTUJE: ", sim_be_image)
+
+    # Simulator frontend image
+    sim_fe_image = get_simulator_service_image(sim_name, "frontend")
+
     # Simulator Database container
     db_volumes = [
         (
@@ -82,8 +60,8 @@ def start_simulator_compose(sim_name: str, userId: int):
             "/docker-entrypoint-initdb.d/insert_data.sql",
         ),
     ]
-    db_container = None
     db_simulator_name = str(userId) + "_" + sim_name + "_" + "database"
+    db_container = None
 
     # Simulator Backend container
     be_simulator_name = str(userId) + "_" + sim_name + "_" + "backend"
@@ -91,10 +69,13 @@ def start_simulator_compose(sim_name: str, userId: int):
 
     # Create isolated docker network for simulator specified by simulator name and user's ID
     simulator_docker_network = docker.network.create(str(userId) + "_" + sim_name)
-    # Network is removed even if containers fail
+
+    # Simulator Frontend container
+    fe_simulator_name = str(userId) + "_" + sim_name + "_" + "frontend"
+    fe_container = None
 
     # Run containers
-    docker.run(
+    db_container = docker.run(
         "postgres:latest",
         name=db_simulator_name,
         hostname=db_simulator_name,
@@ -111,7 +92,7 @@ def start_simulator_compose(sim_name: str, userId: int):
         networks=[simulator_docker_network],
     )
 
-    docker.run(
+    be_container = docker.run(
         image=sim_be_image,
         name=be_simulator_name,
         hostname=be_simulator_name,
@@ -129,4 +110,23 @@ def start_simulator_compose(sim_name: str, userId: int):
         networks=[simulator_docker_network],
     )
 
-    return {"status": "done", "containers": {"be": be_container, "db": db_container}}
+    fe_container = docker.run(
+        image=sim_fe_image,
+        name=fe_simulator_name,
+        hostname=fe_simulator_name,
+        envs={
+            "VITE_AIS_ID": userId,
+        },
+        publish=[(3001, 3001)],
+        detach=True,
+        remove=True,
+        labels={"source": fe_simulator_name},
+        networks=[simulator_docker_network],
+    )
+
+    return {
+        "status": "done",
+        "containers": {"be": be_container, "db": db_container, "fe": fe_container},
+        "network": simulator_docker_network,
+        "docker_client": docker
+    }

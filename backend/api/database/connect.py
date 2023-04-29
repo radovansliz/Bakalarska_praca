@@ -19,11 +19,6 @@ def create_db_connection(db_name: str = None):
     return conn
 
 
-def close_db_connection():
-    cursor.close()
-    connection.close()
-
-
 def init_db_students_table():
     # CREATE INIT TABLE WITH STUDENTS
     connection = create_db_connection()
@@ -35,6 +30,22 @@ def init_db_students_table():
     )
     if not bool(cursor.rowcount):
         cursor.execute(
-            """CREATE TABLE STUDENTS(AIS_ID INT NOT NULL, SIMULATOR_NUMBER INT)"""
+            """CREATE TABLE STUDENTS(AIS_ID INT NOT NULL, SIMULATOR VARCHAR)"""
         )
         connection.commit()
+    cursor.close()
+    connection.close()
+    
+def insert_student(aisId:int, simulator:str):
+    connection = create_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(
+            """INSERT INTO students (ais_id, simulator) VALUES (%s, %s)""",
+            (
+                aisId,
+                simulator,
+            ),
+        )
+    connection.commit()
+    cursor.close()
+    connection.close()

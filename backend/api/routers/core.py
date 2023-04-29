@@ -2,6 +2,7 @@ from fastapi import APIRouter, Body
 from pydantic import BaseModel
 from api.helpers.simulator import get_random_simulator_select
 from api.docker.handler import *
+from api.database.connect import *
 
 router = APIRouter()
 database_simulator_container = None
@@ -19,6 +20,7 @@ class BaseUserModel(BaseModel):
 @router.get("/health")
 def healthcheck():
     return {"status": 200, "message": "Alive as never beforee."}
+
 
 @router.get("/stop")
 def stop_simulators():
@@ -49,11 +51,6 @@ def stop_simulators():
 @router.post("/start")
 async def start_simulator(user: BaseUserModel = Body(...)):
     try:
-        # TEMP INSERTING ID INTO DB...
-        # response = db_module.cursor.execute("""INSERT INTO students (ais_id, simulator_number) VALUES (%s, %s)""", (user.id, 1,))
-        # result = db_module.cursor.fetchone()
-        # db_module.connection.commit()
-
         # Prevziatie AIS ID
         user_id = user.id
 
@@ -74,7 +71,8 @@ async def start_simulator(user: BaseUserModel = Body(...)):
         simulator_network = simulator_instance["network"]
         docker_client = simulator_instance["docker_client"]
 
-        # TODO: Ulozenie udajov do globalnej DB
+        # Ulozenie udajov o studentovi do globalnej DB
+        insert_student(user.id, simulator)
 
         return {
             "user_id": user_id,

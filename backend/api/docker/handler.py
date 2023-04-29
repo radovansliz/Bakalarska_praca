@@ -44,7 +44,8 @@ def start_simulator_compose(sim_name: str, userId: int):
     # Simulator Database container
     db_volumes = [
         (
-            "/Users/radovansliz/Bakalarka/Bakalarska_praca/backend/simulators/"
+            str(os.environ["USER_PROJECT_PATH"])
+            + "/backend/simulators/"
             + sim_name
             + "/sql/create_tables.sql",
             # os.path.join(
@@ -53,7 +54,8 @@ def start_simulator_compose(sim_name: str, userId: int):
             "/docker-entrypoint-initdb.d/create_tables.sql",
         ),
         (
-            "/Users/radovansliz/Bakalarka/Bakalarska_praca/backend/simulators/"
+            str(os.environ["USER_PROJECT_PATH"])
+            + "/backend/simulators/"
             + sim_name
             + "/sql/insert_data.sql",
             # os.path.join(os.getcwd(), "simulators", sim_name, "sql", "insert_data.sql"),
@@ -128,5 +130,5 @@ def start_simulator_compose(sim_name: str, userId: int):
         "status": "done",
         "containers": {"be": be_container, "db": db_container, "fe": fe_container},
         "network": simulator_docker_network,
-        "docker_client": docker
+        "docker_client": docker,
     }

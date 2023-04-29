@@ -6,25 +6,19 @@
       <div v-if="simulatorResponse === null" class="mx-auto w-full max-w-md">
         <div>
           <h2 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">
-            Enter AIS ID to start simulator
+            {{ $t('initView.title') }}
           </h2>
-          <!-- <p class="mt-2 text-sm text-gray-600">
-            Or
-            {{ ' ' }}
-            <a
-              href="/blog"
-              class="font-medium text-indigo-600 hover:text-indigo-500"
-              >contact support</a
-            >
-          </p> -->
         </div>
 
         <div class="mt-8">
           <div class="mt-6">
             <div>
-              <label for="email" class="block text-sm font-medium text-gray-700"
-                >AIS ID</label
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-700"
               >
+                {{ $t('initView.aisId') }}
+              </label>
               <div class="mt-1">
                 <input
                   v-model="aisId"
@@ -35,34 +29,9 @@
                 />
               </div>
               <div v-if="enterIdError" class="w-full mt-1 text-xs text-red-600">
-                Enter valid AIS ID
+                {{ $t('initView.validError') }}
               </div>
             </div>
-
-            <!--              <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-                  <label
-                    for="remember-me"
-                    class="ml-2 block text-sm text-gray-900"
-                    >Remember me</label
-                  >
-                </div>
-
-                <div class="text-sm">
-                  <a
-                    href="#"
-                    class="font-medium text-indigo-600 hover:text-indigo-500"
-                    >Forgot your password?</a
-                  >
-                </div>
-              </div>-->
-
             <div>
               <button
                 @click="startSimulator"
@@ -73,13 +42,13 @@
                   class="-ml-1 mr-3 h-5 w-5 text-white"
                 />
                 <slot />
-                Start
+                {{ $t('initView.start') }}
               </button>
               <div
                 v-if="loading"
                 class="w-full flex items-center text-xs font-sans text-primary-500 mt-3"
               >
-                Simulator is starting. It might take a few minutes...
+                {{ $t('initView.startingSimulator') }}
               </div>
             </div>
           </div>
@@ -91,21 +60,36 @@
           <div class="mx-auto max-w-7xl py-16 px-6 sm:py-24 lg:px-8">
             <div class="text-center">
               <h2 class="text-base font-semibold text-primary-600">
-                CTF Simulations
+                {{ $t('initView.simulatorUpTitle') }}
               </h2>
               <p class="mt-1 text-4xl font-bold tracking-tight text-gray-900">
-                Simulator is ready
+                {{ $t('initView.simulatorReady') }}
               </p>
               <p class="mx-auto mt-5 max-w-xl text-base text-gray-500">
-                Click the button below to enter the simulator
+                {{ $t('initView.enterSimulator') }}
               </p>
-              <div class="mt-5">
+              <div
+                class="mt-5 w-full flex items-ceneter justify-center space-x-5"
+              >
+                <button
+                  @click="stopSimulator"
+                  class="flex justify-center rounded-md border border-primary-700 bg-white py-2 px-4 text-sm font-medium text-primary-700 shadow-sm hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  <LoadingIcon
+                    v-if="loading"
+                    class="-ml-1 mr-3 h-5 w-5 text-primary-700"
+                  />
+                  <slot />
+                  {{ $t('initView.stop') }}
+                </button>
                 <a
+                  v-if="!loading"
                   :href="simulatorResponse.url"
                   target="_blank"
-                  class="inline-flex items-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                  >Continue</a
+                  class="inline-flex items-center rounded-md border border-transparent bg-primary-600 px-8 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >
+                  {{ $t('initView.continue') }}
+                </a>
               </div>
             </div>
           </div>
@@ -140,7 +124,21 @@ async function startSimulator() {
     })
     .json()
 
+  // Timeout added to wait until simulator docker container is ready
+  setTimeout(() => {}, 2000)
+
   simulatorResponse.value = data.value
+  aisId.value = null
+  loading.value = false
+  console.log('STATUS CODE', response.value)
+}
+
+async function stopSimulator() {
+  loading.value = true
+
+  const { response } = await useApiFetch('stop').get()
+
+  simulatorResponse.value = null
 
   loading.value = false
   console.log('STATUS CODE', response.value)

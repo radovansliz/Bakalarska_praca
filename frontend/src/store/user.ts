@@ -12,17 +12,7 @@ export const useUserStore = defineStore('user', {
     }
   },
 
-  getters: {
-    isSigned: (state) => state.auth,
-  },
+  getters: {},
 
-  actions: {
-    async signIn(user: any, token: any): Promise<void> {
-      return Promise.resolve()
-    },
-
-    async signOut(): Promise<void> {
-      console.log('SIGN OUT')
-    },
-  },
+  actions: {},
 })

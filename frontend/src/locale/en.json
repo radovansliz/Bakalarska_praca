@@ -5,5 +5,17 @@
   "alerts": {},
   "errors": {},
   "successMessages": {},
-  "user": {}
+  "user": {},
+  "initView": {
+    "title": "Enter AIS ID to start simulator",
+    "aisId": "AIS ID",
+    "start": "Start",
+    "validError": "Enter valid AIS ID",
+    "startingSimulator": "Simulator is starting. It might take a few minutes...",
+    "simulatorUpTitle": "CTF Simulations",
+    "simulatorReady": "Simulator is ready",
+    "enterSimulator": "Click the button below to enter the simulator",
+    "continue": "Continue",
+    "stop": "Stop simulator"
+  }
 }

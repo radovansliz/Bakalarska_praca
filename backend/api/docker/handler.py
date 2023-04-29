@@ -16,10 +16,10 @@ def get_simulator_service_image(sim_name: str, service_type: str):
 
     # Check if image is built
     if docker.image.exists(image_name):
-        print("Existuje")
+        print("Existuje docker image")
         docker_image = docker.image.inspect(image_name)
     else:
-        print("Neexistuje")
+        print("Neexistuje docker image")
         # Path to simulator backend code
         context_path = os.path.join(os.getcwd(), "simulators", sim_name, service_type)
 
@@ -28,7 +28,6 @@ def get_simulator_service_image(sim_name: str, service_type: str):
             context_path, platforms=["linux/amd64"], cache=True, tags=[image_name]
         )
 
-    print(docker_image)
     return docker_image
 
 

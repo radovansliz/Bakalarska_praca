@@ -1,28 +1,28 @@
 <template>
   <div class="w-full overflow-y-auto p-4 bg-dark-400">
-
     <!-- Instructions -->
-      <div class="rounded-md bg-yellow-50 p-4">
-        <div class="flex">
-          <div class="flex-shrink-0">
-            <InformationCircleIcon
-              class="h-5 w-5 text-yellow-400"
-              aria-hidden="true"
-            />
-          </div>
-          <div class="ml-3 flex-1 font-bold">
-            <p class="text-base text-yellow-700">
-              1. Nájdite SQL zraniteľnosť webovej aplikácie
-            </p>
-            <p class="text-base text-yellow-700">
-              2. Využite zraniteľnosť a nájdite v databáze tabulku s ukrytým flagom
-            </p>
-            <p class="text-base text-yellow-700">
-              3. Prezentujte nájdený výsledok - FLAG
-            </p>
-          </div>
+    <div class="rounded-md bg-yellow-50 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <InformationCircleIcon
+            class="h-5 w-5 text-yellow-400"
+            aria-hidden="true"
+          />
+        </div>
+        <div class="ml-3 flex-1 font-bold">
+          <p class="text-base text-yellow-700">
+            1. Nájdite SQL zraniteľnosť webovej aplikácie
+          </p>
+          <p class="text-base text-yellow-700">
+            2. Využite zraniteľnosť a nájdite v databáze tabulku s ukrytým
+            flagom
+          </p>
+          <p class="text-base text-yellow-700">
+            3. Prezentujte nájdený výsledok - FLAG
+          </p>
         </div>
       </div>
+    </div>
 
     <div class="w-full py-5 text-3xl text-white font-bold">
       Welcome to CTF Bank
@@ -30,9 +30,24 @@
     <div class="w-full py-5">
       <img
         alt=""
-        class="w-full object-cover max-h-60 rounded-md"
-        src="@/assets/images/accountant-calculating-profit-with-financial-analysis-graphs_74855-4937.webp"
+        class="w-full object-cover rounded-md"
+        style="height: 25rem"
+        src="@/assets/images/title.jpg"
       />
+      <div class="text-xs text-gray-100">
+        Photo by
+        <a
+          target="_blank"
+          href="https://unsplash.com/@dawson2406?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+          >Stephen Dawson</a
+        >
+        on
+        <a
+          target="_blank"
+          href="https://unsplash.com/photos/qwtCeJ5cLYs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+          >Unsplash</a
+        >
+      </div>
     </div>
     <div class="py-4 text-gray-100 text-base font-sans">
       <p>
@@ -52,10 +67,10 @@
       </p>
       <p>
         We believe in building long-lasting relationships and being there for
-        our customers when they need us most. At CTF Bank, we are
-        committed to the well-being of our customers and our communities. We
-        strive to be a responsible corporate citizen and make a positive impact
-        wherever we do business.
+        our customers when they need us most. At CTF Bank, we are committed to
+        the well-being of our customers and our communities. We strive to be a
+        responsible corporate citizen and make a positive impact wherever we do
+        business.
       </p>
     </div>
     <div class="py-4">
@@ -104,7 +119,6 @@
 import MoneyStatWidget from '@/components/MoneyStatWidget.vue'
 import NewsLetterPanel from '@/components/NewsLetterPanel.vue'
 import { InformationCircleIcon } from '@heroicons/vue/20/solid'
-
 
 const stats = [
   { title: 'USD', value: '1.0844', image: 'usa' },

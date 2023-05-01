@@ -67,6 +67,11 @@
                 class="flex w-full justify-center rounded-md border border-transparent bg-button-color py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-button-color focus:outline-none focus:ring-2 focus:ring-button-color focus:ring-offset-2"
                 @click="submitInput"
               >
+                <LoadingIcon
+                  v-if="loading"
+                  class="-ml-1 mr-3 h-5 w-5 text-white"
+                />
+                <slot />
                 Sign in
               </button>
             </div>
@@ -94,9 +99,11 @@ import { ref } from 'vue'
 import useFlagMethods from '@/composables/useFlagMethods'
 import { useShopStore } from '@/store/shop'
 import ResultFrame from '@/components/ResultFrame.vue'
+import LoadingIcon from '@/components/LoadingIcon.vue'
 
 const shopStore = useShopStore()
 const showComponent = ref(false)
+const loading = ref(false)
 
 const signInForm = ref({
   email: {
@@ -118,11 +125,13 @@ const { flagFound, flag, getFlag } = useFlagMethods()
 
 // Method to process input in store
 function submitInput() {
+  loading.value = true
   showComponent.value = false
   flag.value = ''
   flagFound.value = false
 
   Object.values(signInForm.value).map((element) => {
+    element.result = null
     setTimeout(() => {
       element.result = shopStore.processValue({
         id: element.id,
@@ -131,5 +140,6 @@ function submitInput() {
     })
   })
   showComponent.value = true
+  loading.value = false
 }
 </script>

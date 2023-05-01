@@ -318,6 +318,7 @@ function submitInput() {
   flagFound.value = false
 
   Object.values(productReviewInput.value).map((element) => {
+    element.result = null
     setTimeout(() => {
       element.result = shopStore.processValue({
         id: element.id,

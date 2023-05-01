@@ -84,7 +84,7 @@ export const useShopStore = defineStore('shop', {
     },
     getVulnerableInputNumber(state) {
       return import.meta.env.VITE_AIS_ID % state.numberOfInputs === 0
-        ? 10
+        ? state.numberOfInputs
         : import.meta.env.VITE_AIS_ID % state.numberOfInputs
     },
     isInputVulnerable(state) {
@@ -96,10 +96,7 @@ export const useShopStore = defineStore('shop', {
   actions: {
     processValue(inputObject: { id: string; value: any }) {
       if (this.isInputVulnerable(inputObject.id)) {
-        return inputObject.value.replace(
-          /<script[^>]*>([\s\S]*?)<\/script>/g,
-          '$1'
-        )
+        return inputObject.value
       } else {
         return sanitizeHTML(inputObject.value)
           ? sanitizeHTML(inputObject.value)

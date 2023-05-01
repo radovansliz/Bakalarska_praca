@@ -1,5 +1,7 @@
 <template>
-  <div class="w-full h-full items-center overflow-y-auto px-4 bg-white lg:px-8 py-6">
+  <div
+    class="w-full h-full items-center overflow-y-auto px-4 bg-white lg:px-8 py-6"
+  >
     <!-- Contact section -->
     <section class="relative bg-white" aria-labelledby="contact-heading">
       <div class="absolute h-1/2 w-full bg-warm-gray-50" aria-hidden="true" />
@@ -247,6 +249,11 @@
                     class="mt-2 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-primary-500 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:w-auto"
                     @click="submitInput"
                   >
+                    <LoadingIcon
+                      v-if="loading"
+                      class="-ml-1 mr-3 h-5 w-5 text-white"
+                    />
+                    <slot />
                     Submit
                   </button>
                 </div>
@@ -277,9 +284,11 @@ import { ref } from 'vue'
 import useFlagMethods from '@/composables/useFlagMethods'
 import { useShopStore } from '@/store/shop'
 import ResultFrame from '@/components/ResultFrame.vue'
+import LoadingIcon from '@/components/LoadingIcon.vue'
 
 const shopStore = useShopStore()
 const showComponent = ref(false)
+const loading = ref(false)
 
 const supportForm = ref({
   email: {
@@ -307,11 +316,13 @@ const { flagFound, flag, getFlag } = useFlagMethods()
 
 // Method to process input in store
 function submitInput() {
+  loading.value = true
   showComponent.value = false
   flag.value = ''
   flagFound.value = false
 
   Object.values(supportForm.value).map((element) => {
+    element.result = null
     setTimeout(() => {
       element.result = shopStore.processValue({
         id: element.id,
@@ -320,5 +331,6 @@ function submitInput() {
     })
   })
   showComponent.value = true
+  loading.value = false
 }
 </script>

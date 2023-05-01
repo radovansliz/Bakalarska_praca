@@ -405,7 +405,7 @@ function submitInput() {
   setTimeout(() => {
     result.value = shopStore.processValue(newsLetterInput.value)
     showComponent.value = true
-  }, 1000)
+  })
   loading.value = false
 }
 

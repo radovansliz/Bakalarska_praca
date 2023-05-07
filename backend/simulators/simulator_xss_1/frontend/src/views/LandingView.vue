@@ -338,6 +338,7 @@
         <div class="py-10 md:flex md:items-center md:justify-between">
           <div class="text-center md:text-left">
             <p class="text-sm text-gray-500">Images provided by Ugmonk</p>
+            <p class="text-sm text-gray-500">Components and design provided by TailwindUI</p>
           </div>
 
           <div class="mt-4 flex items-center justify-center md:mt-0">

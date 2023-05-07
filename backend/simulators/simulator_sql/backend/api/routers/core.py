@@ -4,6 +4,8 @@ from api.database.connect import execute_query
 from api.routers.helpers import find_object_in_payload, get_random__number
 import os
 
+is_vulnerable = get_random__number(os.getenv("AIS_ID"), 1, 9)
+vulnerability_type = get_random__number(os.getenv("AIS_ID"), 1, 2)
 router = APIRouter()
 
 
@@ -33,8 +35,8 @@ def dbcheck():
 @router.post("/newsletter")
 @router.post("/signin")
 def create_object(payload: BaseFormModel = Body(...)):
-    is_vulnerable = get_random__number(os.getenv("AIS_ID"), 1, 9)
-    vulnerability_type = get_random__number(os.getenv("AIS_ID"), 1, 2)
+    global is_vulnerable
+    global vulnerability_type
     results = []
     for object in payload.form:
         try:

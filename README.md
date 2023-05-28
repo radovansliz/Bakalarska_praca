@@ -24,6 +24,17 @@ vykonajte:
 4. Po naštartovaní si otvorte vo webovom prehliadači lokálnu adresu localhost:3000
 5. V prípade, že všetko zbehlo v poriadku, otvorí sa hlavná časť aplikácie kde je treba
 zadať používateľské ID. V tomto momente riadi aplikácia ostatné služby automaticky.
+6. Po spustení služieb sa zobrazí tlačidlo "Continue", pričom kliknutím na tlačidlo sa
+otvorí simulátor v novej karte. (Inicializácia trvá pár sekúnd, v prípade že sa stránka
+nenačíta hneď, je potrebný refresh stránky)
+7. Na ukončenie simulátora slúži tlačidlo "Stop simulátor"na stránke hlavného programu.
+(Vypnutie a vymazanie aktívných kontajnerov simulátora môže tiež chvílu trvať)
+
+Pozn.: Pre otestovanie oboch simulátorov, sa dajú použiť nasledujúce príklady identifikátorov:
+
+• **115116** vyberie SQL Simulátor
+
+• **111111** vyberie XSS Simulátor
 
 ## Upozornenie
 Program aj Docker konfigurácia jednotlivých častí je navrhnutá univerzálne a mala by

@@ -36,7 +36,7 @@ vykonajte:
 3. Počkajte kým sa jednotlivé služby vytvoria a naštartujú. 
 4. Po naštartovaní si otvorte vo webovom prehliadači lokálnu adresu localhost:3000
 5. V prípade, že všetko zbehlo v poriadku, otvorí sa hlavná časť aplikácie kde je treba
-zadať používateľské ID. V tomto momente riadi aplikácia ostatné služby automaticky. **!** Pri prvom skladaní docker images môže dojsť k zlyhaniu budovania (Načítavací loader sa prestane točiť). V tomto prípade je potrebné spustiť program ešte raz a zapnúť simulátor rovnakým spôsobom znova **!** **Na riešení tohto problému sa aktuálne pracuje**
+zadať používateľské ID. V tomto momente riadi aplikácia ostatné služby automaticky. **!** **Pri prvom skladaní docker images môže dojsť k zlyhaniu budovania (Načítavací loader sa prestane točiť). V tomto prípade je potrebné spustiť program ešte raz a zapnúť simulátor rovnakým spôsobom znova** **!** **Na riešení tohto problému sa aktuálne pracuje**
 6. Po spustení služieb sa zobrazí tlačidlo "Continue", pričom kliknutím na tlačidlo sa
 otvorí simulátor v novej karte. (Inicializácia trvá pár sekúnd, v prípade že sa stránka
 nenačíta hneď, je potrebný refresh stránky)

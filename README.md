@@ -50,6 +50,7 @@ Pozn.: Pre otestovanie oboch simulátorov, sa dajú použiť nasledujúce príkl
 • **111111** vyberie XSS Simulátor
 
 ## Upozornenie
+Aplikácia je vo vývojovom štádiu.
 Program aj Docker konfigurácia jednotlivých častí je navrhnutá univerzálne a mala by
 fungovať rovnako na všetkých bežných operačných systémoch. Testovanie systému a jeho
 spustenie sme však vykonávali na operačnom systéme OS X. V prípade spúšťania programu
